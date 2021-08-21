@@ -50,7 +50,7 @@ public:
 public slots:
     void key_pressed();
     void back_space() const;
-    void add_new_contact();
+    static void add_new_contact();
 
 private:
     Ui::MainWindow *ui;

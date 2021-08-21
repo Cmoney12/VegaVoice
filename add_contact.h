@@ -28,6 +28,8 @@ public:
     QLineEdit *phone_number;
     database_handler *db_handler;
     QPushButton *submit;
+public slots:
+    void submit_contact() const;
 };
 
 

@@ -30,6 +30,15 @@ add_contact::add_contact(QWidget *parent): QMainWindow(parent) {
 
     contact_widget->setLayout(contact_layout);
     setCentralWidget(contact_widget);
+    connect(submit, &QPushButton::clicked, this, &add_contact::submit_contact);
+}
+
+void add_contact::submit_contact() const {
+    std::string name = username->text().toStdString();
+    std::string number = phone_number->text().toStdString();
+    const char* contact_name = name.c_str();
+    const char* contact_number = number.c_str();
+    db_handler->create_contact(contact_name, contact_number);
 }
 
 
