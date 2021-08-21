@@ -116,7 +116,8 @@ void MainWindow::back_space() const {
 }
 
 void MainWindow::add_new_contact() {
-    add_contact *contact_window = new add_contact;
+    auto *contact_window = new add_contact;
+    contact_window->setBaseSize(QSize(300,300));
     contact_window->show();
 }
 

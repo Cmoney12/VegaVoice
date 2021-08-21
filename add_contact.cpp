@@ -23,7 +23,7 @@ add_contact::add_contact(QWidget *parent): QMainWindow(parent) {
     submit = new QPushButton("Submit");
 
     contact_layout->addWidget(username_label, 0,0);
-    contact_layout->addWidget(username, 1, 0);
+    contact_layout->addWidget(username, 0, 1);
     contact_layout->addWidget(phone_label, 1,0);
     contact_layout->addWidget(phone_number, 1,1);
     contact_layout->addWidget(submit, 2,1);
