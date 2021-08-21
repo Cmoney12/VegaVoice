@@ -71,9 +71,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     keypad_layout->addWidget(phone_button[0], 5, 2);
-
-    connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
-
     keypad_widget->setLayout(keypad_layout);
     right_widget->setLayout(right_layout);
     right_layout->addWidget(keypad_widget);
@@ -81,6 +78,8 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->addWidget(left_widget);
     splitter->addWidget(right_widget);
     setCentralWidget(splitter);
+    connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
+
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
