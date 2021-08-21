@@ -2,6 +2,7 @@
 #include <iostream>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "add_contact.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,13 +22,26 @@ MainWindow::MainWindow(QWidget *parent)
     db_handler->check_tables();
 
     //*****Contacts*******
+    contact_label = new QLabel("Contacts");
     splitter = new QSplitter;
     left_widget = new QWidget;
     left_layout = new QFormLayout;
     contact_view = new QListView;
     string_list = new StringList;
+    new_contact = new QPushButton("+");
+    //new_contact->setStyleSheet("QPushButton {background-color: #A3C1DA; color: green;}");
+    erase_contact = new QPushButton("-");
+    //erase_contact->setStyleSheet("QPushButton {background-color: #A3C1DA; color: red;}");
     contact_view->setModel(string_list);
-    left_layout->addWidget(contact_view);
+    auto *contacts_widgets = new QWidget;
+    auto *contact_button_layout = new QGridLayout;
+    contact_button_layout->addWidget(new_contact, 0, 0);
+    contact_button_layout->addWidget(erase_contact, 0, 1);
+    contacts_widgets->setLayout(contact_button_layout);
+
+    left_layout->addRow(contact_label);
+    left_layout->addRow(contacts_widgets);
+    left_layout->addRow(contact_view);
     left_widget->setLayout(left_layout);
 
     //*****Phone********
@@ -60,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     keypad_layout->addWidget(call_button, 6, 1);
 
 
-    for (int i = 0; i <= digit_button; ++i)
+    for (int i = digit_button; i >= 0; --i)
         phone_button[i] = createButton(QString::number(i), SLOT(key_pressed()));
     //digitButtons[i] = createButton(QString::number(i), SLOT(digitClicked()));
 
@@ -78,6 +92,8 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->addWidget(left_widget);
     splitter->addWidget(right_widget);
     setCentralWidget(splitter);
+
+    connect(new_contact, &QPushButton::clicked, this, &MainWindow::add_new_contact);
     connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
 
 }
@@ -97,6 +113,11 @@ void MainWindow::key_pressed() {
 
 void MainWindow::back_space() const {
     number_line->backspace();
+}
+
+void MainWindow::add_new_contact() {
+    add_contact *contact_window = new add_contact;
+    contact_window->show();
 }
 
 MainWindow::~MainWindow()

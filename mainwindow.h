@@ -11,6 +11,7 @@
 #include "button.h"
 #include "StringList.h"
 #include <QLineEdit>
+#include <QLabel>
 #include "database_handler.h"
 
 
@@ -30,22 +31,26 @@ public:
     QFormLayout *right_layout;
     QWidget *right_widget;
     QWidget *left_widget;
-    QMenuBar *menu;
+    QMenuBar *menu{};
     QListView *contact_view;
     QGridLayout *keypad_layout;
     QWidget *keypad_widget;
     enum {digit_button = 10};
     QLineEdit *number_line;
-    Button *phone_button[digit_button];
+    Button *phone_button[digit_button]{};
     Button *createButton(const QString &text, const char *member);
     QPushButton *call_button;
     StringList *string_list;
     database_handler *db_handler;
     QPushButton *back_space_button;
+    QLabel *contact_label;
+    QPushButton *new_contact;
+    QPushButton *erase_contact;
 
 public slots:
     void key_pressed();
     void back_space() const;
+    void add_new_contact();
 
 private:
     Ui::MainWindow *ui;
