@@ -56,6 +56,7 @@ public:
     }
 
 
+
 private:
     int rc{};
     sqlite3 *db{};

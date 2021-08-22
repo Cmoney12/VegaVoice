@@ -27,7 +27,7 @@ add_executable(voip_client3 main.cpp
         StringList.h
         database_handler.h
         add_contact.cpp
-        add_contact.h)
+        add_contact.h Login.cpp Login.h)
 
 target_link_libraries(voip_client3
         Qt5::Core
