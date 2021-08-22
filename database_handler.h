@@ -47,7 +47,7 @@ public:
 
         if (sqlite3_prepare_v2(db, insert_contact, -1, &insert_stmt, nullptr) == SQLITE_OK) {
             sqlite3_bind_text(insert_stmt, 1, contact_name, -1, nullptr);
-            sqlite3_bind_text(insert_stmt, 1, phone_number, -1, nullptr);
+            sqlite3_bind_text(insert_stmt, 2, phone_number, -1, nullptr);
             rc = sqlite3_step(insert_stmt);
             sqlite3_exec(db, "COMMIT TRANSACTION", nullptr, nullptr, &zErrMsg);
             sqlite3_finalize(insert_stmt);

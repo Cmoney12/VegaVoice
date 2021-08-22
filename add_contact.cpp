@@ -1,4 +1,5 @@
 #include <QDir>
+#include <iostream>
 #include "add_contact.h"
 
 //
@@ -31,6 +32,7 @@ add_contact::add_contact(QWidget *parent): QMainWindow(parent) {
     contact_widget->setLayout(contact_layout);
     setCentralWidget(contact_widget);
     connect(submit, &QPushButton::clicked, this, &add_contact::submit_contact);
+    this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void add_contact::submit_contact() const {
