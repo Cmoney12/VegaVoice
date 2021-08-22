@@ -19,10 +19,20 @@ Login::Login(QWidget *parent) :QDialog(parent)
     phone_number = new QLineEdit;
     password_password_label = new QLabel("Password");
     password = new QLineEdit;
+    submit = new QPushButton;
     layout = new QGridLayout;
-    central_widget = new QWidget;
+    layout->addWidget(phone_number_label, 0, 0);
+    layout->addWidget(phone_number, 0, 1);
+    layout->addWidget(password_password_label, 1,0);
+    layout->addWidget(password, 1, 1);
+    layout->addWidget(submit,2,1);
+    connect(submit, &QPushButton::clicked, this, &Login::validate);
 
+    setLayout(layout);
 
+}
+
+void Login::validate() {
 
 }
 

@@ -21,7 +21,52 @@ public:
         if (!check_contacts_table()) {
             create_contacts_table();
         }
+
+        if (!check_login_table()) {
+            create_login_table();
+        }
     }
+
+    bool check_login_table() {
+        bool exists = false;
+        char sql[] = "SELECT * FROM LOGIN";
+        struct sqlite3_stmt *selectstmt;
+        int result = sqlite3_prepare_v2(db, sql, -1, &selectstmt, nullptr);
+        if (result == SQLITE_OK) {
+            sqlite3_free(selectstmt);
+            exists = true;
+        }
+        return exists;
+    }
+
+    void create_login_table() {
+        char create_table[] = "CREATE TABLE LOGIN(phone_number text, password text);";
+        int rc = sqlite3_exec(db, create_table, nullptr, nullptr, &zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+
+    bool login(const char* phone_number, const char* password) {
+        char sql[] = "SELECT * FROM LOGIN WHERE phone_number = ? and password = ?";
+        struct sqlite3_stmt *selectstmt;
+        if (sqlite3_prepare_v2(db, sql, -1, &selectstmt, nullptr) == SQLITE_OK) {
+            sqlite3_bind_text(selectstmt, 1, phone_number, -1, nullptr);
+            sqlite3_bind_text(selectstmt, 2, password, -1, nullptr);
+            if (sqlite3_step(selectstmt) == SQLITE_ROW) {
+                // record found
+                sqlite3_finalize(selectstmt);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    void register_user(const std::string& phone_number, const std::string& password) {
+        std::string registration = "INSERT INTO LOGIN VALUES(" + phone_number + ", " + password + ")";
+        rc = sqlite3_exec(db, registration.c_str(), nullptr, nullptr, &zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+
 
     bool check_contacts_table() {
         bool exists = false;
