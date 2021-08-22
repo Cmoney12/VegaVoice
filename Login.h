@@ -30,9 +30,10 @@ public:
     database_handler *db_handler;
     QPushButton *submit;
     QGridLayout *layout;
-    QWidget *central_widget;
+    QPushButton *register_button;
 public slots:
     void validate();
+    void register_user() const;
 };
 
 

@@ -40,8 +40,8 @@ public:
     }
 
     void create_login_table() {
-        char create_table[] = "CREATE TABLE LOGIN(phone_number text, password text);";
-        int rc = sqlite3_exec(db, create_table, nullptr, nullptr, &zErrMsg);
+        char create_table[] = "CREATE TABLE LOGIN(phone_number text, password text)";
+        rc = sqlite3_exec(db, create_table, nullptr, nullptr, &zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
@@ -81,7 +81,7 @@ public:
     }
 
     void create_contacts_table() {
-        char create_table[] = "CREATE TABLE CONTACTS(username text, phone_number text);";
+        char create_table[] = "CREATE TABLE CONTACTS(username text, phone_number text)";
         rc = sqlite3_exec(db, create_table, nullptr, nullptr, &zErrMsg);
         sqlite3_free(zErrMsg);
     }

@@ -8,6 +8,7 @@
 Login::Login(QWidget *parent) :QDialog(parent)
 {
     setWindowTitle( tr("User Login") );
+    setModal(true);
     QDir current_dir = QDir::current();
     current_dir.cdUp();
     QString resources_path = current_dir.absolutePath();
@@ -15,25 +16,44 @@ Login::Login(QWidget *parent) :QDialog(parent)
     QByteArray ba = localdb_path.toLocal8Bit();
     const char *db_path = ba.data();
     db_handler = new database_handler(db_path);
+    db_handler->check_tables();
     phone_number_label = new QLabel("Phone Number");
     phone_number = new QLineEdit;
     password_password_label = new QLabel("Password");
     password = new QLineEdit;
-    submit = new QPushButton;
+    submit = new QPushButton("Login");
+    register_button = new QPushButton("Register");
     layout = new QGridLayout;
     layout->addWidget(phone_number_label, 0, 0);
     layout->addWidget(phone_number, 0, 1);
     layout->addWidget(password_password_label, 1,0);
     layout->addWidget(password, 1, 1);
     layout->addWidget(submit,2,1);
-    connect(submit, &QPushButton::clicked, this, &Login::validate);
+    layout->addWidget(register_button, 3, 1);
 
+    connect(submit, &QPushButton::clicked, this, &Login::validate);
+    connect(register_button, &QPushButton::clicked, this, &Login::register_user);
     setLayout(layout);
 
 }
 
 void Login::validate() {
+    std::string phone = phone_number->text().toStdString();
+    const char* number = phone.c_str();
 
+    std::string pass_phrase = password->text().toStdString();
+    const char* pass = pass_phrase.c_str();
+
+    if (db_handler->login(number, pass)) {
+        accepted();
+        this->deleteLater();
+    }
+}
+
+void Login::register_user() const {
+    std::string phone = phone_number->text().toStdString();
+    std::string pass = password->text().toStdString();
+    db_handler->register_user(phone, pass);
 }
 
 Login::~Login()
