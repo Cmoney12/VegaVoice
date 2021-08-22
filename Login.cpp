@@ -3,6 +3,7 @@
 //
 
 #include <QDir>
+#include <iostream>
 #include "Login.h"
 
 Login::Login(QWidget *parent) :QDialog(parent)
@@ -46,7 +47,7 @@ void Login::validate() {
 
     if (db_handler->login(number, pass)) {
         accepted();
-        this->deleteLater();
+        close();
     }
 }
 

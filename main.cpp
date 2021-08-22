@@ -10,8 +10,5 @@ int main(int argc, char *argv[])
     login.show();
     MainWindow w;
     QObject::connect(&login, &Login::accepted, &w, &MainWindow::show);
-    /**if (login.exec() == QDialog::Accepted) {
-        w.show();
-    }**/
     return QApplication::exec();
 }

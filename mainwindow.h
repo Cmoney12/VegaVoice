@@ -12,6 +12,7 @@
 #include "StringList.h"
 #include <QLineEdit>
 #include <QLabel>
+#include <QTcpSocket>
 #include "database_handler.h"
 
 
@@ -24,8 +25,8 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
     QFormLayout *left_layout;
     QSplitter *splitter;
     QFormLayout *right_layout;
@@ -46,13 +47,30 @@ public:
     QLabel *contact_label;
     QPushButton *new_contact;
     QPushButton *erase_contact;
+    std::string users_phone_number;
+    QPushButton *connect_button;
+    bool call_in_progress = false;
+    struct Protocol {
+        int size;
+        int status_code;
+        char receivers_number[11];
+        char senders_number[11];
+        char data[30];
+    };
 
 public slots:
+    void onReadyRead();
+    void connection();
     void key_pressed();
     void back_space() const;
     static void add_new_contact();
+    void phone_call();
 
 private:
+    void send_call_request();
+
+private:
+    QTcpSocket *socket;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

@@ -100,6 +100,33 @@ public:
         }
     }
 
+    std::string get_phone_number() {
+        std::string phone_number;
+
+        char query[] = "SELECT phone_number FROM LOGIN";
+        struct sqlite3_stmt *selectStmt;
+        if (sqlite3_prepare(db, query, -1, &selectStmt, nullptr) == SQLITE_OK) {
+            int ctotal = sqlite3_column_count(selectStmt); // Count the Number of Columns in the Table
+            int res;
+            while (true) {
+                res = sqlite3_step(selectStmt); // Execute SQL Statement.
+                if (res == SQLITE_ROW) {
+                    //sqlite3_finalize(selectStmt);
+                    for (int i = 0; i < ctotal; i++) {
+                        std::string s = (char *) sqlite3_column_text(selectStmt, i);  // Read each Column in the row.
+                        // print or format the output as you want
+                        phone_number = s;
+                    }
+                    if (res == SQLITE_DONE || res == SQLITE_ERROR) {
+                        break;
+                    }
+                }
+            }
+        }
+        sqlite3_finalize(selectStmt);
+        return phone_number;
+    }
+
 
 
 private:

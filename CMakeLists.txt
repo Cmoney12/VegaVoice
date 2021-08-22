@@ -11,6 +11,7 @@ find_package(Qt5 COMPONENTS
         Core
         Gui
         Widgets
+        Network
         REQUIRED)
 
 
@@ -33,5 +34,6 @@ target_link_libraries(voip_client3
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets
+        Qt5::Network
         sqlite3)
 
