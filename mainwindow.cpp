@@ -3,6 +3,8 @@
 #include <QMessageBox>
 #include <cstring>
 #include <memory>
+#include <QHostAddress>
+#include <QHostInfo>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "add_contact.h"
@@ -103,6 +105,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
     connect(connect_button, &QPushButton::clicked, this, &MainWindow::connection);
     connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    hostname = QHostAddress("192.168.1.88");
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
@@ -115,7 +118,7 @@ Button *MainWindow::createButton(const QString &text, const char *member)
 void MainWindow::connection() {
     users_phone_number = db_handler->get_phone_number();
     std::string send_number = users_phone_number + "\n";
-    socket->connectToHost("127.0.0.1", 1234);
+    socket->connectToHost(hostname, 1234);
 
     if (socket->state() != QTcpSocket::ConnectedState) {
         socket->write(QString(send_number.c_str()).toUtf8());
@@ -123,6 +126,9 @@ void MainWindow::connection() {
     else {
         QMessageBox::warning(this, "Connection", "Unsuccessful Connection");
     }
+    QHostInfo::fromName(QHostInfo::localHostName()).addresses().toStdList();
+
+
 }
 
 void MainWindow::start_phone_call() {

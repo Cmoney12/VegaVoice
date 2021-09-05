@@ -13,6 +13,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QTcpSocket>
+#include <QHostAddress>
 #include "database_handler.h"
 
 
@@ -49,6 +50,7 @@ public:
     QPushButton *erase_contact;
     std::string users_phone_number;
     QPushButton *connect_button;
+    QHostAddress hostname;
     bool call_in_progress = false;
     void accept_call_request();
 
