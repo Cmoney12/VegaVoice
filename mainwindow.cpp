@@ -2,9 +2,11 @@
 #include <iostream>
 #include <QMessageBox>
 #include <cstring>
+#include <memory>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "add_contact.h"
+#include "Serialization.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -56,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     keypad_widget = new QWidget;
     number_line = new QLineEdit;
     call_button = new QPushButton;
+    connect(call_button, &QPushButton::clicked, this, &MainWindow::start_phone_call);
     back_space_button = new QPushButton;
     QString back_space_location = resources_path + "/resources/back_space_button.png";
     QPixmap back_space_pixmap(back_space_location);
@@ -64,13 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
     //back_space_button->setIconSize(QSize(30,30));
 
 
-    call_button->setStyleSheet("QPushButton { background-color: rgb(18, 18, 204);}");
     QString picture_location = resources_path.append("/resources/phone1.png");
     QPixmap pixmap(picture_location);
     QIcon ButtonIcon(pixmap);
     call_button->setIcon(ButtonIcon);
     call_button->setIconSize(QSize(30,30));
-    call_button->setStyleSheet("QPushButton { background-color: rgb(18, 18, 204);}");
 
     number_line->setAlignment(Qt::AlignRight);
     keypad_layout->addWidget(number_line, 0, 0, 1, 3);
@@ -97,10 +98,11 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->addWidget(right_widget);
     setCentralWidget(splitter);
 
+    //connect(call_button, &QPushButton::clicked, this, &MainWindow::start_phone_call);
     connect(new_contact, &QPushButton::clicked, this, &MainWindow::add_new_contact);
     connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
     connect(connect_button, &QPushButton::clicked, this, &MainWindow::connection);
-    connect(call_button, &QPushButton::clicked, this, &MainWindow::phone_call);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
@@ -112,12 +114,18 @@ Button *MainWindow::createButton(const QString &text, const char *member)
 
 void MainWindow::connection() {
     users_phone_number = db_handler->get_phone_number();
+    std::string send_number = users_phone_number + "\n";
     socket->connectToHost("127.0.0.1", 1234);
-    socket->write(QString(users_phone_number.c_str()).toUtf8());
-    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+
+    if (socket->state() != QTcpSocket::ConnectedState) {
+        socket->write(QString(send_number.c_str()).toUtf8());
+    }
+    else {
+        QMessageBox::warning(this, "Connection", "Unsuccessful Connection");
+    }
 }
 
-void MainWindow::phone_call() {
+void MainWindow::start_phone_call() {
     if (call_in_progress) {
         call_in_progress = false;
     }
@@ -143,45 +151,70 @@ void MainWindow::add_new_contact() {
 }
 
 void MainWindow::send_call_request() {
+    auto *serial = new Serialization;
     Protocol protocol_packet{};
-    long long header_size = sizeof(protocol_packet.size) + sizeof(protocol_packet.status_code) +
-            sizeof(protocol_packet.senders_number) + sizeof(protocol_packet.receivers_number);
-    std::string receiver = number_line->text().toStdString();
-    const char* recipient = receiver.c_str();
-    const char* deliverer = users_phone_number.c_str();
-
-    std::memcpy(&protocol_packet.senders_number, deliverer, std::strlen(deliverer));
-    std::memcpy(&protocol_packet.receivers_number, recipient, std::strlen(recipient));
+    std::memcpy(protocol_packet.senders_number, users_phone_number.c_str(), users_phone_number.size() + 1);
+    std::string receivers_string  = number_line->text().toStdString();
+    std::memcpy(protocol_packet.receivers_number, receivers_string.c_str(), receivers_string.size() + 1);
     protocol_packet.status_code = 100; //trying
-    socket->write((char*)&protocol_packet, header_size);
+
+    serial->create_bson(protocol_packet);
+    uint8_t *data = serial->create_packet();
+
+    socket->write((char*)data, serial->length());
     call_in_progress = true;
+    delete serial;
+}
+
+
+void MainWindow::accept_call_request() {
+    auto *serial = new Serialization;
+    Protocol protocol_packet{};
+    std::memcpy(protocol_packet.senders_number, users_phone_number.c_str(), users_phone_number.size() + 1);
+    std::string receivers_string  = number_line->text().toStdString();
+    std::memcpy(protocol_packet.receivers_number, receivers_string.c_str(), receivers_string.size() + 1);
+    protocol_packet.status_code = 100; //trying
+
+    serial->create_bson(protocol_packet);
+    uint8_t *data = serial->create_packet();
+
+    socket->write((char*)data, serial->length());
+    call_in_progress = true;
+    delete serial;
 }
 
 
 void MainWindow::onReadyRead() {
-    Protocol protocol_packet{};
-    if (socket->bytesAvailable() > protocol_packet.size) {
+    auto *serial = new Serialization;
+    if (socket->bytesAvailable() >= 4) {
 
-        socket->read((char*)&protocol_packet.size, sizeof(protocol_packet.size));
+        socket->read((char*)serial->head(), Serialization::HEADER_LENGTH);
 
-        if (socket->bytesAvailable() >= protocol_packet.size) {
+        if (socket->bytesAvailable() >= Serialization::HEADER_LENGTH && serial->decode_header()) {
 
-            socket->read((char*)&protocol_packet + 4, protocol_packet.size);
+            socket->read((char*)serial->body(), serial->body_length());
 
-            if (protocol_packet.status_code == 100) {
-                QMessageBox::information(this, "Call Request", protocol_packet.senders_number);
+            Protocol protocol = serial->parse_bson();
+
+            if (protocol.status_code == 100) {
+                bool accept;
+                QMessageBox::information(this, "Call Request", protocol.senders_number);
                 call_in_progress = true;
+                std::cout << "200" << std::endl;
             }
 
-            else if (protocol_packet.status_code == 202) {
+            else if (protocol.status_code == 202) {
                 //call was accepted instantiate audio start sending date
+                std::cout << "202" << std::endl;
             }
 
-            else if (protocol_packet.status_code == 603) {
+            else if (protocol.status_code == 603) {
                 call_in_progress = false;
+                std::cout << "603" << std::endl;
             }
         }
     }
+    delete serial;
 }
 
 MainWindow::~MainWindow()

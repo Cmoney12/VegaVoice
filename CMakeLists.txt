@@ -6,6 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+find_package (bson-1.0 1.7 REQUIRED)
 
 find_package(Qt5 COMPONENTS
         Core
@@ -28,12 +29,13 @@ add_executable(voip_client3 main.cpp
         StringList.h
         database_handler.h
         add_contact.cpp
-        add_contact.h Login.cpp Login.h)
+        add_contact.h Login.cpp Login.h UdpCall.h SenderUdp.h DelivererUdp.h Serialization.h)
 
 target_link_libraries(voip_client3
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets
         Qt5::Network
-        sqlite3)
+        sqlite3
+        mongo::bson_shared)
 

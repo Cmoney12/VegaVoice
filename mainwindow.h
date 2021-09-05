@@ -50,21 +50,15 @@ public:
     std::string users_phone_number;
     QPushButton *connect_button;
     bool call_in_progress = false;
-    struct Protocol {
-        int size;
-        int status_code;
-        char receivers_number[11];
-        char senders_number[11];
-        char data[30];
-    };
+
 
 public slots:
+    void start_phone_call();
     void onReadyRead();
     void connection();
     void key_pressed();
     void back_space() const;
     static void add_new_contact();
-    void phone_call();
 
 private:
     void send_call_request();
