@@ -7,11 +7,9 @@
 
 #include <boost/asio.hpp>
 
-class UdpCall : public SenderUdp, public ReceiverUdp {
+class UdpCall {
 public:
-    virtual start() {
-
-    }
+    virtual void start() = 0;
 
 std::string ip_address;
 int port_receiver;

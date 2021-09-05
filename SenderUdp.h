@@ -7,8 +7,8 @@
 
 #include "UdpCall.h"
 
-class SenderUdp {
-    start() {
+class SenderUdp : UdpCall {
+    void start() {
 
     }
 
