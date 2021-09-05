@@ -5,6 +5,7 @@
 #include <memory>
 #include <QHostAddress>
 #include <QHostInfo>
+#include <QInputDialog>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "add_contact.h"
@@ -179,7 +180,7 @@ void MainWindow::accept_call_request() {
     std::memcpy(protocol_packet.senders_number, users_phone_number.c_str(), users_phone_number.size() + 1);
     std::string receivers_string  = number_line->text().toStdString();
     std::memcpy(protocol_packet.receivers_number, receivers_string.c_str(), receivers_string.size() + 1);
-    protocol_packet.status_code = 100; //trying
+    protocol_packet.status_code = 200; //trying
 
     serial->create_bson(protocol_packet);
     uint8_t *data = serial->create_packet();
@@ -203,11 +204,25 @@ void MainWindow::onReadyRead() {
             Protocol protocol = serial->parse_bson();
 
             if (protocol.status_code == 100) {
-                bool accept;
-                QMessageBox::information(this, "Call Request", protocol.senders_number);
+                QMessageBox msgBox;
+                msgBox.setText("Incoming Call From .");
+                msgBox.setInformativeText(protocol.senders_number);
+                msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+                msgBox.setDefaultButton(QMessageBox::Cancel);
+                int ret = msgBox.exec();
+
+                switch (ret) {
+                    case QMessageBox::Ok:
+                        accept_call_request();
+                        break;
+                    case QMessageBox::Cancel:
+                        std::cout << "Canceled" << std::endl;
+                        break;
+                    default:
+                        break;
+                }
                 call_in_progress = true;
                 std::cout << protocol.data << std::endl;
-                std::cout << "200" << std::endl;
             }
 
             else if (protocol.status_code == 202) {
