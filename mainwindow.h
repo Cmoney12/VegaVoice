@@ -50,6 +50,7 @@ public:
     std::string users_phone_number;
     QPushButton *connect_button;
     bool call_in_progress = false;
+    void accept_call_request();
 
 
 public slots:
