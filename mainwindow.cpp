@@ -226,7 +226,7 @@ void MainWindow::onReadyRead() {
             }
 
             else if (protocol.status_code == 202) {
-                //call was accepted instantiate audio start sending date
+                //call was accepted instantiate Audio start sending date
                 std::cout << "202" << std::endl;
             }
 
