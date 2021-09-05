@@ -4,8 +4,14 @@
 
 #ifndef VOIP_CLIENT3_UDPCALL_H
 #define VOIP_CLIENT3_UDPCALL_H
+
+#include <boost/asio.hpp>
+
 class UdpCall : public SenderUdp, public ReceiverUdp {
 public:
+    virtual start() {
+
+    }
 
 std::string ip_address;
 int port_receiver;
