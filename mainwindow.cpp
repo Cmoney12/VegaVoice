@@ -206,6 +206,7 @@ void MainWindow::onReadyRead() {
                 bool accept;
                 QMessageBox::information(this, "Call Request", protocol.senders_number);
                 call_in_progress = true;
+                std::cout << protocol.data << std::endl;
                 std::cout << "200" << std::endl;
             }
 

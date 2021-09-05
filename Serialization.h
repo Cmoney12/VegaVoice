@@ -11,7 +11,7 @@ struct Protocol {
     int32_t status_code;
     char receivers_number[11];
     char senders_number[11];
-    char* data;
+    char data[30];
 };
 
 class Serialization {
