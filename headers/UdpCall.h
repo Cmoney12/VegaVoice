@@ -11,6 +11,8 @@ class UdpCall {
 public:
     virtual void start() = 0;
 
+    virtual void stop() = 0;
+
 std::string ip_address;
 int port_receiver;
 int port_sender;

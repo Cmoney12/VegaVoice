@@ -1,6 +1,6 @@
 #include <QDir>
 #include <iostream>
-#include "add_contact.h"
+#include "../headers/add_contact.h"
 
 //
 // Created by corey on 8/21/21.
@@ -48,4 +48,4 @@ add_contact::~add_contact()
 {
     delete db_handler;
 }
-#include "add_contact.h"
+#include "../headers/add_contact.h"

@@ -135,21 +135,21 @@ if(NOT OPUS_LIBRARY AND NOT OPUS_HEADER_PATH)
 endif()
 
 
-add_executable(voip_client3 main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        button.h
-        button.cpp
-        mainwindow.cpp
-        mainwindow.h
-        button.cpp
-        button.h
-        StringList.h
-        database_handler.h
-        add_contact.cpp
-        add_contact.h
-        Login.cpp Login.h UdpCall.h SenderUdp.h DelivererUdp.h Serialization.h Audio.h ReceiverUdp.h)
+add_executable(voip_client3 sources/main.cpp
+        sources/mainwindow.cpp
+        headers/mainwindow.h
+        sources/mainwindow.ui
+        headers/button.h
+        sources/button.cpp
+        sources/mainwindow.cpp
+        headers/mainwindow.h
+        sources/button.cpp
+        headers/button.h
+        headers/StringList.h
+        headers/database_handler.h
+        sources/add_contact.cpp
+        headers/add_contact.h
+        sources/Login.cpp headers/Login.h headers/UdpCall.h headers/SenderUdp.h headers/DelivererUdp.h headers/Serialization.h headers/Audio.h headers/ReceiverUdp.h)
 
 target_link_libraries(voip_client3
         Qt5::Core

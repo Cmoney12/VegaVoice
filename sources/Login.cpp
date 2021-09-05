@@ -4,7 +4,7 @@
 
 #include <QDir>
 #include <iostream>
-#include "Login.h"
+#include "../headers/Login.h"
 
 Login::Login(QWidget *parent) :QDialog(parent)
 {

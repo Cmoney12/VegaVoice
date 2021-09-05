@@ -6,10 +6,10 @@
 #include <QHostAddress>
 #include <QHostInfo>
 #include <QInputDialog>
-#include "mainwindow.h"
+#include "../headers/mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "add_contact.h"
-#include "Serialization.h"
+#include "../headers/add_contact.h"
+#include "../headers/Serialization.h"
 
 
 MainWindow::MainWindow(QWidget *parent)

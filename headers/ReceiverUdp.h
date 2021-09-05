@@ -16,7 +16,10 @@ class ReceiverUdp : UdpCall {
         socket.async_receive_from(boost::asio::buffer(this->recv_buffer), remote_endpoint,
                                   boost::bind(&ReceiverUDP::handleReceive, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
         thread = new std::thread([&] { io_service.run(); } );
-        std::cout << "Server launched" << std::endl;
+
+    }
+
+    void stop() {
 
     }
 

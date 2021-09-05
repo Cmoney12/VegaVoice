@@ -12,6 +12,10 @@ class SenderUdp : UdpCall {
 
     }
 
+    void stop() {
+
+    }
+
     boost::asio::io_context io_context;
     boost::asio::ip::udp::socket{io_context};
     boost::asio::ip::udp::endpoint remote_endpoint;

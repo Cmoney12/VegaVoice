@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "Login.h"
+#include "../headers/mainwindow.h"
+#include "../headers/Login.h"
 
 #include <QApplication>
 
