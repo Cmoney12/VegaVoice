@@ -7,8 +7,6 @@
 
 struct Packet {
     int size; //total size of the network packet
-    char receiver_number[11];
-    char deliverer_number[11];
     uint8_t data_[ENCODED_MAX_BYTES];
 };
 

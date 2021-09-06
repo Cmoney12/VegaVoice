@@ -7,15 +7,19 @@
 
 #include <boost/asio.hpp>
 
+#include "Audio.h"
+
 class UdpCall {
 public:
+    UdpCall() {
+        audio.audio_init();
+    }
     virtual void start() = 0;
-
     virtual void stop() = 0;
 
-std::string ip_address;
-int port_receiver;
-int port_sender;
-//TODO ADD AUDIO
+    Audio audio;
+    std::string ip_address;
+    int port_receiver{};
+    int port_sender{};
 };
 #endif //VOIP_CLIENT3_UDPCALL_H

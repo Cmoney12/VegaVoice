@@ -13,13 +13,16 @@ class SenderUdp : UdpCall {
     }
 
     void stop() {
-
+        io_context.stop();
+        thread->join();
+        socket_.close();
     }
 
+    Audio& audio;
     boost::asio::io_context io_context;
-    boost::asio::ip::udp::socket{io_context};
+    boost::asio::ip::udp::socket socket_{io_context};
     boost::asio::ip::udp::endpoint remote_endpoint;
-    std::thread *q = nullptr;
+    std::thread *thread = nullptr;
 };
 
 #endif //VOIP_CLIENT3_SENDERUDP_H
