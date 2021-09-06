@@ -5,6 +5,28 @@
 #ifndef VOIP_CLIENT3_AUDIO_H
 #define VOIP_CLIENT3_AUDIO_H
 
+
+#include <opus/opus.h>
+#include <portaudio.h>
+
+enum Constants {
+    PORT_DEFAULT = 56780,
+    PORT_MAX     = 56789,
+    CHANNELS = 1,               //1 channel (mono) audio 2 channel stereo was 2
+    SAMPLE_RATE = 48000,        //48kHz, the number of 16-bit samples per second
+    PACKET_MS = 20,             //How long a single packet of samples is (20ms recommended by Opus)
+    PACKET_SAMPLES = 960,       //Samples per packet (48kHz * 0.020s = 960 samples)
+    ENCODED_MAX_BYTES = 240,    //Max size of a single packet's data once compressed (capacity of opus_encode buffer)
+    BUFFERED_PACKETS_MIN = 2,   //How many packets to build up before we start playing audio
+    BUFFERED_PACKETS_MAX = 5,   //When too many packets have built up and we start skipping them to speed up playback
+    DISCONNNECT_TIMEOUT = 5000, //How long to wait for valid AUDIO packets before we time out and disconnect
+    RING_PACKET_INTERVAL = 500, //How often to repeat RING packet
+    UPNP_TIMEOUT_MS = 8000,      //Timeout to use when doing UPnP discovery
+    NUM_SECONDS = 5,
+    inChannels = 0,
+    outChannels = 1
+};
+
 struct Packet {
     int size; //total size of the network packet
     uint8_t data_[ENCODED_MAX_BYTES];
@@ -17,7 +39,6 @@ public:
         PaError paError = Pa_Initialize();
         if (paError != paNoError)
             throw std::runtime_error(std::string("Pa_ReadStream error: ") + Pa_GetErrorText(paError));
-        audio_init();
     }
 
     ~Audio() {
@@ -25,8 +46,7 @@ public:
             opus_decoder_destroy(decoder);
         if (encoder)
             opus_encoder_destroy(encoder);
-
-        Pa_Terminate();
+        stop();
     }
 
     void audio_init() {
@@ -110,6 +130,21 @@ public:
             else
                 throw std::runtime_error(std::string("Pa_WriteStream failed: ") + Pa_GetErrorText(PaErr));
         }
+    }
+
+
+    void stop() {
+        if (read_stream) {
+            PaError err = Pa_StopStream(read_stream);
+            if (err)
+                throw std::runtime_error(std::string( " Error: ") + static_cast<std::string>(Pa_GetErrorText(err)));
+        }
+        if (write_stream) {
+            PaError err = Pa_StopStream(write_stream);
+            if (err)
+                throw std::runtime_error(std::string( " Error: ") + static_cast<std::string>(Pa_GetErrorText(err)));
+        }
+        Pa_Terminate();
     }
 
 private:

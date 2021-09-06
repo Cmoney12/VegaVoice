@@ -15,7 +15,6 @@ find_package(Qt5 COMPONENTS
         Network
         REQUIRED)
 
-
 find_package(Boost)
 IF(Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})

@@ -8,18 +8,29 @@
 #include <boost/asio.hpp>
 
 #include "Audio.h"
+#include "ReceiverUdp.h"
+#include "SenderUdp.h"
 
-class UdpCall {
+class UdpCall : public ReceiverUdp, SenderUdp {
 public:
-    UdpCall() {
-        audio.audio_init();
-    }
-    virtual void start() = 0;
-    virtual void stop() = 0;
 
-    Audio audio;
-    std::string ip_address;
-    int port_receiver{};
-    int port_sender{};
+    UdpCall(const std::string& ip_address, const int& port_receiver, const int& port_sender)
+            : SenderUdp(ip_address, port_receiver, audio),
+              ReceiverUdp(port_sender, audio) { }
+
+    ~UdpCall() {
+        delete audio;
+    }
+
+    using ReceiverUdp::start;
+    using SenderUdp::start;
+    void start() { audio->audio_init(); }
+
+    using ReceiverUdp::stop;
+    using SenderUdp::stop;
+    void stop() {};
+
+    Audio *audio = new Audio;
 };
+
 #endif //VOIP_CLIENT3_UDPCALL_H
