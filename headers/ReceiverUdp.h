@@ -9,7 +9,7 @@
 
 
 class ReceiverUdp : UdpCall {
-    void start() {
+    void start() override {
 
         socket_.open(udp::v4());
         socket_.bind(udp::endpoint(address::from_string("0.0.0.0"), port_));
@@ -45,7 +45,7 @@ class ReceiverUdp : UdpCall {
         })
     }
 
-    void stop() {
+    void stop() override {
         io_context.stop();
         thread->join();
         socket_.close();
