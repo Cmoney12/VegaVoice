@@ -114,7 +114,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(ip_settings, SIGNAL(triggered()), this, SLOT(set_default_host_ip()));
     connect(udp_settings, SIGNAL(triggered()), this, SLOT(set_default_udp_port()));
-    hostname = QHostAddress("192.168.1.88");
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
@@ -127,7 +126,11 @@ Button *MainWindow::createButton(const QString &text, const char *member)
 void MainWindow::connection() {
     users_phone_number = db_handler->get_phone_number();
     std::string send_number = users_phone_number + "\n";
-    socket->connectToHost(hostname, 1234);
+    std::string host_ip = db_handler->get_host_ip();
+    int port = db_handler->get_default_port();
+
+    hostname = QHostAddress(host_ip.c_str());
+    socket->connectToHost(hostname, port);
 
     if (socket->state() != QTcpSocket::ConnectedState) {
         socket->write(QString(send_number.c_str()).toUtf8());
