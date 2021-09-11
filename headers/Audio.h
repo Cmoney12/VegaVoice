@@ -42,6 +42,7 @@ public:
     }
 
     ~Audio() {
+        std::cout << "destructor" << std::endl;
         if (decoder)
             opus_decoder_destroy(decoder);
         if (encoder)
@@ -97,13 +98,18 @@ public:
         opus_int16 microphone[PACKET_SAMPLES]{};
         PaError paError = Pa_ReadStream(read_stream, microphone, PACKET_SAMPLES);
         if (paError != paNoError) {
-            if (paError == paOutputUnderflowed)
+            /**if (paError == paOutputUnderflowed)
                 std::cout << "Pa_ReadStream output underflowed" << std::endl;
             else
-                throw std::runtime_error(std::string("Pa_ReadStream failed: ") + Pa_GetErrorText(paError));
+                throw std::runtime_error(std::string("Pa_ReadStream failed: ") + Pa_GetErrorText(paError));**/
+            if (paError != paInputOverflowed)
+                throw std::runtime_error(std::string("Pa_ReadStream error: ") + Pa_GetErrorText(paError));
         }
 
         opus_int32 encoded = opus_encode(encoder, microphone, PACKET_SAMPLES, packet.data_, sizeof(packet.data_));
+        if (encoded < 0)
+            throw std::runtime_error(std::string("opus_encode error: ") + opus_strerror(encoded));
+
         packet.size = encoded;
         return packet;
     }
@@ -113,8 +119,7 @@ public:
         opus_int32 decoded_ret = opus_decode(decoder, packet.data_, packet.size, decoded, PACKET_SAMPLES, 0);
         if (decoded_ret == OPUS_INVALID_PACKET)
         {
-            std::cout << "Corrupt Packet " << std::endl;
-            // Try again by treating the packet as lost
+            // Try again by treating the packet as lost corrupt packet
             decoded_ret = opus_decode(decoder, nullptr, 0, decoded, PACKET_SAMPLES, 0);
         }
         write_message(decoded, PACKET_SAMPLES);
@@ -122,13 +127,14 @@ public:
 
     void write_message(void* buffer, ulong samples) {
         PaError PaErr = Pa_WriteStream(write_stream, buffer, PACKET_SAMPLES);
-        std::cout << Pa_GetErrorText(PaErr) << std::endl;
         if (PaErr != paNoError)
         {
-            if (PaErr == paOutputUnderflowed)
-                std::cout << "Pa_WriteStream output underflowed" << std::endl;
+            /**if (PaErr == paOutputUnderflowed)
+                //std::cout << "Pa_WriteStream output underflowed" << std::endl;
             else
-                throw std::runtime_error(std::string("Pa_WriteStream failed: ") + Pa_GetErrorText(PaErr));
+                throw std::runtime_error(std::string("Pa_WriteStream failed: ") + Pa_GetErrorText(PaErr));**/
+            if (PaErr != paOutputUnderflowed)
+                throw std::runtime_error(std::string("Pa_WriteStream failed:") + Pa_GetErrorText(PaErr));
         }
     }
 
@@ -139,6 +145,7 @@ public:
             if (err)
                 throw std::runtime_error(std::string( " Error: ") + static_cast<std::string>(Pa_GetErrorText(err)));
         }
+
         if (write_stream) {
             PaError err = Pa_StopStream(write_stream);
             if (err)
@@ -155,5 +162,6 @@ private:
     OpusEncoder *encoder{};
     OpusDecoder *decoder{};
 };
+
 
 #endif //VOIP_CLIENT3_AUDIO_H

@@ -11,26 +11,46 @@
 #include "ReceiverUdp.h"
 #include "SenderUdp.h"
 
+#include <boost/asio.hpp>
+#include <thread>
+
+#include "Audio.h"
+#include "ReceiverUdp.h"
+#include "SenderUdp.h"
+
+
 class UdpCall : public ReceiverUdp, SenderUdp {
 public:
 
-    UdpCall(const std::string& ip_address, const int& port_receiver, const int& port_sender)
-            : SenderUdp(ip_address, port_receiver, audio),
-              ReceiverUdp(port_sender, audio) { }
-
-    ~UdpCall() {
-        delete audio;
+    UdpCall(const std::string& ip_address, const int& port_receiver, const int& port_sender, Audio* audio)
+            : SenderUdp(ip_address, port_sender),
+              ReceiverUdp(port_receiver, audio) {
+        audio_ = audio;
     }
 
-    using ReceiverUdp::start;
-    using SenderUdp::start;
-    void start() { audio->audio_init(); }
+    void start() {
+        this->connect();
+        call_active_ = true;
+        while(call_active_) {
+            try {
+                Packet packet = audio_->read_message();
+                this->write_packet(packet);
+            } catch (std::error_code& ec) {
+                std::cerr << ec << std::endl;
+            }
+        }
+    }
 
-    using ReceiverUdp::stop;
-    using SenderUdp::stop;
-    void stop() {};
+    void stop() {
+        call_active_ = false;
+        ReceiverUdp::stop();
+        SenderUdp::stop();
 
-    Audio *audio = new Audio;
+    };
+
+private:
+    Audio *audio_;
+    bool call_active_{};
 };
 
 #endif //VOIP_CLIENT3_UDPCALL_H
