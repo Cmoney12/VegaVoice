@@ -6,13 +6,8 @@
 #define VOIP_CLIENT3_UDPCALL_H
 
 #include <boost/asio.hpp>
-
-#include "Audio.h"
-#include "ReceiverUdp.h"
-#include "SenderUdp.h"
-
-#include <boost/asio.hpp>
 #include <thread>
+#include <iostream>
 
 #include "Audio.h"
 #include "ReceiverUdp.h"

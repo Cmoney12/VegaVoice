@@ -6,6 +6,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
+
 find_package (bson-1.0 1.7 REQUIRED)
 
 find_package(Qt5 COMPONENTS
@@ -134,7 +138,7 @@ if(NOT OPUS_LIBRARY AND NOT OPUS_HEADER_PATH)
 endif()
 
 
-add_executable(voip_client3 sources/main.cpp
+add_executable(voip_client3 main.cpp
         sources/mainwindow.cpp
         headers/mainwindow.h
         sources/mainwindow.ui
@@ -159,5 +163,6 @@ target_link_libraries(voip_client3
         mongo::bson_shared
         ${OPUS_LIBRARIES}
         opus
-        Boost::boost)
+        Boost::boost
+        Threads::Threads)
 

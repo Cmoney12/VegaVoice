@@ -14,8 +14,10 @@
 #include <QLabel>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <thread>
 #include "database_handler.h"
-
+#include "Audio.h"
+#include "UdpCall.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -33,7 +35,8 @@ public:
     QFormLayout *right_layout;
     QWidget *right_widget;
     QWidget *left_widget;
-    QMenuBar *menu{};
+    QMenuBar *menu;
+    QMenu *settings_menu;
     QListView *contact_view;
     QGridLayout *keypad_layout;
     QWidget *keypad_widget;
@@ -51,8 +54,11 @@ public:
     std::string users_phone_number;
     QPushButton *connect_button;
     QHostAddress hostname;
+    Audio* audio;
+    std::thread *call_thread;
     bool call_in_progress = false;
     void accept_call_request();
+    void call_established(char* ip_address);
 
 
 public slots:
@@ -62,6 +68,8 @@ public slots:
     void key_pressed();
     void back_space() const;
     static void add_new_contact();
+    void set_default_host_ip();
+    void set_default_udp_port();
 
 private:
     void send_call_request();

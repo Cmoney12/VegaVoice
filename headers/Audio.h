@@ -42,7 +42,6 @@ public:
     }
 
     ~Audio() {
-        std::cout << "destructor" << std::endl;
         if (decoder)
             opus_decoder_destroy(decoder);
         if (encoder)

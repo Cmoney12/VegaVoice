@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
     QDir current_dir = QDir::current();
     current_dir.cdUp();
     QString resources_path = current_dir.absolutePath();
@@ -28,6 +27,12 @@ MainWindow::MainWindow(QWidget *parent)
     const char *db_path = ba.data();
     db_handler = new database_handler(db_path);
     db_handler->check_tables();
+
+    menu = new QMenuBar;
+    settings_menu = new QMenu("Settings");
+    QAction *ip_settings = settings_menu->addAction("Host IP");
+    QAction *udp_settings = settings_menu->addAction("Default UDP port");
+    menu->addMenu(settings_menu);
 
     //*****Contacts*******
     contact_label = new QLabel("Contacts");
@@ -100,12 +105,15 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->addWidget(left_widget);
     splitter->addWidget(right_widget);
     setCentralWidget(splitter);
+    setMenuBar(menu);
 
-    //connect(call_button, &QPushButton::clicked, this, &MainWindow::start_phone_call);
+    connect(call_button, &QPushButton::clicked, this, &MainWindow::start_phone_call);
     connect(new_contact, &QPushButton::clicked, this, &MainWindow::add_new_contact);
     connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
     connect(connect_button, &QPushButton::clicked, this, &MainWindow::connection);
     connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    connect(ip_settings, SIGNAL(triggered()), this, SLOT(set_default_host_ip()));
+    connect(udp_settings, SIGNAL(triggered()), this, SLOT(set_default_udp_port()));
     hostname = QHostAddress("192.168.1.88");
 }
 
@@ -190,6 +198,43 @@ void MainWindow::accept_call_request() {
     delete serial;
 }
 
+void MainWindow::call_established(char* ip_address) {
+
+    /**if (std::strlen(ip_address) != 0) {
+        audio = new Audio;
+        audio->audio_init();
+        UdpCall phone_call(audio);
+        call_thread = new std::thread([&] { phone_call.start(); });
+    }**/
+
+}
+
+
+void MainWindow::set_default_host_ip() {
+    std::string default_host_ip = db_handler->get_host_ip();
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Host IP"),
+                                         tr("Host IP: "), QLineEdit::Normal,
+                                         default_host_ip.c_str(), &ok);
+    if (ok && !text.isEmpty()) {
+        std::string host_ip = text.toStdString();
+        db_handler->update_host_ip(host_ip);
+    }
+}
+
+void MainWindow::set_default_udp_port() {
+    int default_port = db_handler->get_default_port();
+    std::string port_number = std::to_string(default_port);
+    bool ok;
+    QString port = QInputDialog::getText(this, tr("UDP Port"),
+                                         tr("UDP Port: "), QLineEdit::Normal,
+                                         port_number.c_str(), &ok);
+    if (ok && !port.isEmpty()) {
+        db_handler->update_udp_port(port.toStdString());
+    }
+
+}
+
 
 void MainWindow::onReadyRead() {
     auto *serial = new Serialization;
@@ -227,7 +272,7 @@ void MainWindow::onReadyRead() {
 
             else if (protocol.status_code == 200) {
                 //call was accepted instantiate Audio start sending date
-                std::cout << "202" << std::endl;
+                Protocol protocol = serial->parse_bson();
             }
 
             else if (protocol.status_code == 603) {
@@ -244,3 +289,4 @@ MainWindow::~MainWindow()
     delete db_handler;
     delete ui;
 }
+
