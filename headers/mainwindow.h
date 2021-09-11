@@ -55,10 +55,12 @@ public:
     QPushButton *connect_button;
     QHostAddress hostname;
     Audio* audio;
+    UdpCall *phone_call;
     std::thread *call_thread;
     bool call_in_progress = false;
     void accept_call_request();
     void call_established(char* ip_address);
+    void end_call();
 
 
 public slots:

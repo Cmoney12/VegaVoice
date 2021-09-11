@@ -161,6 +161,7 @@ target_link_libraries(voip_client3
         Qt5::Network
         sqlite3
         mongo::bson_shared
+        ${PORTAUDIO_LIBRARIES}
         ${OPUS_LIBRARIES}
         opus
         Boost::boost

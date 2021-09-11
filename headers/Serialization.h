@@ -78,7 +78,6 @@ public:
         data_[2] = (body_length_>>16) & 0xFF;
         data_[1] = (body_length_>>8) & 0xFF;
         data_[0] = body_length_ & 0xFF;
-        std::cout << "Body Size " << body_length_ << std::endl;
         if(body_length_ > MAX_MESSAGE_SIZE) {
             body_length_ = 0;
             return false;

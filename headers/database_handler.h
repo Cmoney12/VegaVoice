@@ -188,7 +188,7 @@ public:
     }
 
     void update_host_ip(const std::string& host_ip) {
-        std::string update_sql = "UPDATE SETTINGS SET host_ip = " + host_ip + "WHERE rowid = 1";
+        std::string update_sql = "UPDATE SETTINGS SET host_ip = '" + host_ip + "' WHERE rowid = 1";
         rc = sqlite3_exec(db, update_sql.c_str(), nullptr, nullptr, &zErrMsg);
         sqlite3_free(zErrMsg);
     }

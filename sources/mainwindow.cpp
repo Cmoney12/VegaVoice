@@ -127,10 +127,12 @@ void MainWindow::connection() {
     users_phone_number = db_handler->get_phone_number();
     std::string send_number = users_phone_number + "\n";
     std::string host_ip = db_handler->get_host_ip();
-    int port = db_handler->get_default_port();
 
-    hostname = QHostAddress(host_ip.c_str());
-    socket->connectToHost(hostname, port);
+    auto host = QString::fromStdString(host_ip);
+    quint8 host_ = host.toUInt();
+
+    hostname = QHostAddress(host_);
+    socket->connectToHost(hostname, 1234);
 
     if (socket->state() != QTcpSocket::ConnectedState) {
         socket->write(QString(send_number.c_str()).toUtf8());
@@ -146,6 +148,7 @@ void MainWindow::connection() {
 void MainWindow::start_phone_call() {
     if (call_in_progress) {
         call_in_progress = false;
+        end_call();
     }
     else if (!call_in_progress && !number_line->text().isEmpty()) {
         send_call_request();
@@ -203,13 +206,25 @@ void MainWindow::accept_call_request() {
 
 void MainWindow::call_established(char* ip_address) {
 
-    /**if (std::strlen(ip_address) != 0) {
+    std::cout << "Call established" << ip_address << std::endl;
+
+    if (std::strlen(ip_address) != 0) {
         audio = new Audio;
         audio->audio_init();
-        UdpCall phone_call(audio);
-        call_thread = new std::thread([&] { phone_call.start(); });
-    }**/
+        //TODO Get Sender IP address
+        int port = db_handler->get_default_port();
+        phone_call = new UdpCall(ip_address, port, port, audio);
+        call_thread = new std::thread([&] { phone_call->start(); });
 
+    }
+
+}
+
+void MainWindow::end_call() {
+    phone_call->stop();
+    delete audio;
+    call_thread->join();
+    delete phone_call;
 }
 
 
@@ -258,7 +273,6 @@ void MainWindow::onReadyRead() {
                 msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
                 msgBox.setDefaultButton(QMessageBox::Cancel);
                 int ret = msgBox.exec();
-
                 switch (ret) {
                     case QMessageBox::Ok:
                         accept_call_request();
@@ -275,7 +289,8 @@ void MainWindow::onReadyRead() {
 
             else if (protocol.status_code == 200) {
                 //call was accepted instantiate Audio start sending date
-                Protocol protocol = serial->parse_bson();
+                call_established(protocol.data);
+                std::cout << "200" << std::endl;
             }
 
             else if (protocol.status_code == 603) {
