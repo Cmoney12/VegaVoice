@@ -38,10 +38,9 @@ public:
 
     void stop() {
         call_active_ = false;
-        ReceiverUdp::stop();
         SenderUdp::stop();
-
-    };
+        ReceiverUdp::stop();
+    }
 
 private:
     Audio *audio_;

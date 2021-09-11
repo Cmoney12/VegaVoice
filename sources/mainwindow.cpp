@@ -211,20 +211,21 @@ void MainWindow::call_established(char* ip_address) {
     if (std::strlen(ip_address) != 0) {
         audio = new Audio;
         audio->audio_init();
-        //TODO Get Sender IP address
+        //TODO Get Sender port
         int port = db_handler->get_default_port();
         phone_call = new UdpCall(ip_address, port, port, audio);
         call_thread = new std::thread([&] { phone_call->start(); });
-
     }
 
 }
 
 void MainWindow::end_call() {
-    phone_call->stop();
-    delete audio;
-    call_thread->join();
-    delete phone_call;
+    if (phone_call && call_thread) {
+        phone_call->stop();
+        phone_call = nullptr;
+        audio = nullptr;
+        call_thread->join();
+    }
 }
 
 
