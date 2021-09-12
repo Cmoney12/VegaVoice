@@ -81,14 +81,14 @@ public slots:
     void add_new_contact() const;
     void set_default_host_ip();
     void set_default_udp_port();
-    void delete_contact();
+    void delete_contact() const;
     void set_recipient() const;
     void contact_submission();
-    void tab_selected();
+    void tab_selected() const;
 
 private:
     void send_call_request();
-    void clear_history();
+    void clear_history() const;
 
 private:
     QTcpSocket *socket;

@@ -152,18 +152,21 @@ void MainWindow::connection() {
     hostname = QHostAddress(host_);
     socket->connectToHost(hostname, 1234);
 
-    if (socket->state() != QTcpSocket::ConnectedState) {
+    if(!socket->waitForConnected(5))
+    {// Error
+        socket->close();
+    }
+
+    if ((socket->state() == QAbstractSocket::ConnectedState)) {
         socket->write(QString(send_number.c_str()).toUtf8());
     }
     else {
         QMessageBox::warning(this, "Connection", "Unsuccessful Connection");
     }
     QHostInfo::fromName(QHostInfo::localHostName()).addresses().toStdList();
-
-
 }
 
-void MainWindow::tab_selected() {
+void MainWindow::tab_selected() const {
     if (tab_widget->currentIndex() == 1) {
         std::list<std::tuple<std::string, std::string, std::int64_t>> history = db_handler->get_call_history();
         history_widget->set_history(history);
@@ -171,7 +174,7 @@ void MainWindow::tab_selected() {
 }
 
 
-void MainWindow::clear_history() {
+void MainWindow::clear_history() const {
     QMessageBox confirm_delete;
     confirm_delete.setText("Clear All History");
     confirm_delete.setInformativeText("Are you sure?");
@@ -219,7 +222,7 @@ void MainWindow::back_space() const {
     number_line->backspace();
 }
 
-void MainWindow::delete_contact() {
+void MainWindow::delete_contact() const {
     QString username = string_list->get_contact(contact_view->currentIndex());
     db_handler->erase_contact(username.toStdString());
     string_list->delete_user(contact_view->currentIndex());
