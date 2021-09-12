@@ -18,6 +18,7 @@
 #include "database_handler.h"
 #include "Audio.h"
 #include "UdpCall.h"
+#include "ContactDialog.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -30,6 +31,7 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+    ContactDialog *contact_dialog;
     QTabWidget *tab_widget;
     QTab *phone_tab;
     QFormLayout *left_layout;
@@ -63,6 +65,7 @@ public:
     void accept_call_request();
     void call_established(char* ip_address);
     void end_call();
+    void display_contacts() const;
 
 
 public slots:
@@ -71,9 +74,12 @@ public slots:
     void connection();
     void key_pressed();
     void back_space() const;
-    static void add_new_contact();
+    void add_new_contact() const;
     void set_default_host_ip();
     void set_default_udp_port();
+    void delete_contact();
+    void set_recipient() const;
+    void contact_submission();
 
 private:
     void send_call_request();

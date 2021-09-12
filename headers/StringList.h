@@ -15,10 +15,10 @@ public:
         setData(index(rowCount()-1), string);
     }
 
-    QString set_recipient(QModelIndex index) {
+    QString get_contact(const QModelIndex& index) {
 
         QString contact;
-        if (!stringList().empty() && stringList().size() >= index.row())
+        if (!stringList().empty() && stringList().size() >= index.row() && index.isValid())
             contact = stringList().at(index.row());
 
         return contact;
@@ -37,6 +37,12 @@ public:
         if (!index.isValid() || index.row() >= stringList().size())
             return;
         removeRows(index.row(), 1);
+    }
+
+    void clear() {
+        for(int i = 0; i < this->rowCount(); i++) {
+            removeRow(i);
+        }
     }
 
     StringList& operator<<(const QString& string){

@@ -6,6 +6,7 @@
 #include <QHostAddress>
 #include <QHostInfo>
 #include <QInputDialog>
+#include <QDialogButtonBox>
 #include "../headers/mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "../headers/add_contact.h"
@@ -109,6 +110,11 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(splitter);
     setMenuBar(menu);
 
+    //**********Contact Dialog*******************
+    contact_dialog = new ContactDialog;
+
+
+    display_contacts();
     connect(call_button, &QPushButton::clicked, this, &MainWindow::start_phone_call);
     connect(new_contact, &QPushButton::clicked, this, &MainWindow::add_new_contact);
     connect(back_space_button, &QPushButton::clicked, this, &MainWindow::back_space);
@@ -116,6 +122,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(ip_settings, SIGNAL(triggered()), this, SLOT(set_default_host_ip()));
     connect(udp_settings, SIGNAL(triggered()), this, SLOT(set_default_udp_port()));
+    connect(erase_contact, &QPushButton::clicked, this, &MainWindow::delete_contact);
+    connect(contact_view, SIGNAL(clicked(QModelIndex)), this, SLOT(set_recipient()));
+    connect(contact_dialog, &ContactDialog::accepted, this, &MainWindow::contact_submission);
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
@@ -147,6 +156,14 @@ void MainWindow::connection() {
 
 }
 
+
+void MainWindow::set_recipient() const {
+    QString username = string_list->get_contact(contact_view->currentIndex());
+    number_line->clear();
+    std::string phone_number = db_handler->number_from_username(username.toStdString());
+    number_line->setText(QString::fromStdString(phone_number));
+}
+
 void MainWindow::start_phone_call() {
     if (call_in_progress) {
         call_in_progress = false;
@@ -167,10 +184,32 @@ void MainWindow::back_space() const {
     number_line->backspace();
 }
 
-void MainWindow::add_new_contact() {
-    auto *contact_window = new add_contact;
-    contact_window->setBaseSize(QSize(300,300));
-    contact_window->show();
+void MainWindow::delete_contact() {
+    QString username = string_list->get_contact(contact_view->currentIndex());
+    db_handler->erase_contact(username.toStdString());
+    string_list->delete_user(contact_view->currentIndex());
+}
+
+void MainWindow::display_contacts() const {
+    std::list<std::string> contacts = db_handler->get_all_usernames();
+    for(const auto& i: contacts) {
+        string_list->append(QString::fromStdString(i));
+    }
+}
+
+void MainWindow::contact_submission() {
+    std::string contact_name_ = contact_dialog->contact_name_edit->text().toStdString();
+    std::string contact_number_ = contact_dialog->contact_number_edit->text().toStdString();
+    if (!contact_name_.empty() && !contact_number_.empty()) {
+        db_handler->create_contact(contact_name_.c_str(), contact_number_.c_str());
+        string_list->append(QString::fromStdString(contact_name_));
+    }
+    contact_dialog->contact_name_edit->clear();
+    contact_dialog->contact_number_edit->clear();
+}
+
+void MainWindow::add_new_contact() const {
+    contact_dialog->show();
 }
 
 void MainWindow::send_call_request() {
@@ -208,7 +247,6 @@ void MainWindow::accept_call_request() {
 
 void MainWindow::call_established(char* ip_address) {
 
-    std::cout << "Call established" << ip_address << std::endl;
 
     if (std::strlen(ip_address) != 0) {
         audio = new Audio;

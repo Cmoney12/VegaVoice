@@ -6,6 +6,7 @@
 #define VOIP_CLIENT3_DATABASE_HANDLER_H
 
 #include <sqlite3.h>
+#include <list>
 
 class database_handler {
 public:
@@ -177,7 +178,6 @@ public:
                         port = s;
                     }
                 }
-
                 if (res == SQLITE_DONE || res == SQLITE_ERROR) {
                     break;
                 }
@@ -219,7 +219,6 @@ public:
                         phone_number += s;
                     }
                 }
-
                 if (res == SQLITE_DONE || res == SQLITE_ERROR) {
                     break;
                 }
@@ -229,7 +228,69 @@ public:
         return phone_number;
     }
 
+    std::list<std::string> get_all_usernames() {
+        sqlite3_stmt *selectStmt = nullptr;
+        char select_all_usernames[] = "SELECT username FROM CONTACTS";
+        std::list<std::string> usernames;
+        if (sqlite3_prepare_v2(db, select_all_usernames, -1, &selectStmt, nullptr) == SQLITE_OK) {
+            int ctotal = sqlite3_column_count(selectStmt); // Count the Number of Columns in the Table
+            int res;
+            while (true) {
+                res = sqlite3_step(selectStmt); // Execute SQL Statement.
+                if (res == SQLITE_ROW) {
+                    //sqlite3_finalize(selectStmt);
+                    int i = 0;
+                    std::string first_field = (char *) sqlite3_column_text(selectStmt, i);
+                    // print or format the output as you want
+                    usernames.emplace_back(first_field);
+                }
+                if (res == SQLITE_DONE || res == SQLITE_ERROR) {
+                    break;
+                }
+            }
+        }
+        sqlite3_finalize(selectStmt);
+        return usernames;
+    }
 
+    void erase_contact(const std::string& contact) {
+        std::string contact_sql = "DELETE FROM CONTACTS WHERE username = ?";
+        sqlite3_stmt *delete_stmt = nullptr;
+        if (sqlite3_prepare_v2(db, contact_sql.c_str(), -1, &delete_stmt, nullptr) == SQLITE_OK) {
+            int res = sqlite3_step(delete_stmt);
+            sqlite3_bind_text(delete_stmt, 1, contact.c_str(), -1, nullptr);
+            sqlite3_exec(db, "COMMIT TRANSACTION", nullptr, nullptr, &zErrMsg);
+            sqlite3_finalize(delete_stmt);
+        }
+    }
+
+    std::string number_from_username(const std::string& username) {
+        std::string sql = "SELECT phone_number FROM CONTACTS WHERE username = ?";
+        std::string phone_number;
+        sqlite3_stmt *selectStmt = nullptr;
+        if (sqlite3_prepare(db, sql.c_str(), -1, &selectStmt, nullptr) == SQLITE_OK) {
+            sqlite3_bind_text(selectStmt, 1, username.c_str(), -1, nullptr);
+            int ctotal = sqlite3_column_count(selectStmt); // Count the Number of Columns in the Table
+            int res;
+            while (true) {
+                res = sqlite3_step(selectStmt); // Execute SQL Statement.
+                if (res == SQLITE_ROW) {
+                    //sqlite3_finalize(selectStmt);
+                    for (int i = 0; i < ctotal; i++)  // Loop times the number of columns in the table
+                    {
+                        std::string s = (char *) sqlite3_column_text(selectStmt, i);  // Read each Column in the row.
+                        // print or format the output as you want
+                        phone_number += s;
+                    }
+                }
+                if (res == SQLITE_DONE || res == SQLITE_ERROR) {
+                    break;
+                }
+            }
+        }
+        sqlite3_finalize(selectStmt);
+        return phone_number;
+    }
 
 private:
     int rc{};

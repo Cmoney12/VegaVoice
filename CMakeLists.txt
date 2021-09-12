@@ -152,7 +152,7 @@ add_executable(voip_client3 main.cpp
         headers/database_handler.h
         sources/add_contact.cpp
         headers/add_contact.h
-        sources/Login.cpp headers/Login.h headers/UdpCall.h headers/SenderUdp.h headers/DelivererUdp.h headers/Serialization.h headers/Audio.h headers/ReceiverUdp.h)
+        sources/Login.cpp headers/Login.h headers/UdpCall.h headers/SenderUdp.h headers/DelivererUdp.h headers/Serialization.h headers/Audio.h headers/ReceiverUdp.h sources/ContactDialog.cpp headers/ContactDialog.h)
 
 target_link_libraries(voip_client3
         Qt5::Core
