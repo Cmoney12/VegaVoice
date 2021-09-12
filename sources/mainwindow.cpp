@@ -9,7 +9,6 @@
 #include <QDialogButtonBox>
 #include "../headers/mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "../headers/add_contact.h"
 #include "../headers/Serialization.h"
 
 

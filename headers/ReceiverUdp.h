@@ -2,8 +2,8 @@
 // Created by corey on 9/5/21.
 //
 
-#ifndef VOIP_CLIENT3_RECEIVERUDP_H
-#define VOIP_CLIENT3_RECEIVERUDP_H
+#ifndef VEGAVOICE_RECEIVERUDP_H
+#define VEGAVOICE_RECEIVERUDP_H
 
 #include "Audio.h"
 

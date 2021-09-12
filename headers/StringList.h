@@ -2,8 +2,8 @@
 // Created by corey on 3/15/21.
 //
 
-#ifndef CLIENTCHATAPP_STRINGLIST_H
-#define CLIENTCHATAPP_STRINGLIST_H
+#ifndef VEGAVOICE_STRINGLIST_H
+#define VEGAVOICE_STRINGLIST_H
 
 #include <QStringListModel>
 
@@ -51,4 +51,4 @@ public:
     }
 };
 
-#endif //CLIENTCHATAPP_STRINGLIST_H
+#endif //VEGAVOICE_STRINGLIST_H

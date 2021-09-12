@@ -2,8 +2,8 @@
 // Created by corey on 8/22/21.
 //
 
-#ifndef VOIP_CLIENT3_UDPCALL_H
-#define VOIP_CLIENT3_UDPCALL_H
+#ifndef VEGAVOICE_UDPCALL_H
+#define VEGAVOICE_UDPCALL_H
 
 #include <boost/asio.hpp>
 #include <thread>
@@ -47,4 +47,4 @@ private:
     bool call_active_{};
 };
 
-#endif //VOIP_CLIENT3_UDPCALL_H
+#endif //VEGAVOICE_UDPCALL_H

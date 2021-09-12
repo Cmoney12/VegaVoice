@@ -2,8 +2,8 @@
 // Created by corey on 9/5/21.
 //
 
-#ifndef VOIP_CLIENT3_AUDIO_H
-#define VOIP_CLIENT3_AUDIO_H
+#ifndef VEGAVOICE_AUDIO_H
+#define VEGAVOICE_AUDIO_H
 
 
 #include <opus/opus.h>

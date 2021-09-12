@@ -2,8 +2,8 @@
 // Created by corey on 8/21/21.
 //
 
-#ifndef VOIP_CLIENT3_LOGIN_H
-#define VOIP_CLIENT3_LOGIN_H
+#ifndef VEGAVOICE_LOGIN_H
+#define VEGAVOICE_LOGIN_H
 
 #include <QDialog>
 #include <QLabel>
@@ -38,4 +38,4 @@ public slots:
 
 
 
-#endif //VOIP_CLIENT3_LOGIN_H
+#endif //VEGAVOICE_LOGIN_H

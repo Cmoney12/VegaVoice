@@ -4,8 +4,8 @@
 
 #include <bson.h>
 
-#ifndef VOIP_CLIENT3_SERIALIZATION_H
-#define VOIP_CLIENT3_SERIALIZATION_H
+#ifndef VEGAVOICE_SERIALIZATION_H
+#define VEGAVOICE_SERIALIZATION_H
 
 struct Protocol {
     int32_t status_code;
@@ -144,4 +144,4 @@ private:
     uint8_t header[HEADER_LENGTH]{};
 };
 
-#endif //VOIP_CLIENT3_SERIALIZATION_H
+#endif //VEGAVOICE_SERIALIZATION_H

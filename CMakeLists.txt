@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(voip_client3)
+project(VegaVoice)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
@@ -138,7 +138,7 @@ if(NOT OPUS_LIBRARY AND NOT OPUS_HEADER_PATH)
 endif()
 
 
-add_executable(voip_client3 main.cpp
+add_executable(VegaVoice main.cpp
         sources/mainwindow.cpp
         headers/mainwindow.h
         sources/mainwindow.ui
@@ -150,11 +150,9 @@ add_executable(voip_client3 main.cpp
         headers/button.h
         headers/StringList.h
         headers/database_handler.h
-        sources/add_contact.cpp
-        headers/add_contact.h
         sources/Login.cpp headers/Login.h headers/UdpCall.h headers/SenderUdp.h headers/DelivererUdp.h headers/Serialization.h headers/Audio.h headers/ReceiverUdp.h sources/ContactDialog.cpp headers/ContactDialog.h)
 
-target_link_libraries(voip_client3
+target_link_libraries(VegaVoice
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets

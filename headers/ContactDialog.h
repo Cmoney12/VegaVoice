@@ -2,8 +2,8 @@
 // Created by corey on 9/12/21.
 //
 
-#ifndef VOIP_CLIENT3_CONTACTDIALOG_H
-#define VOIP_CLIENT3_CONTACTDIALOG_H
+#ifndef VEGAVOICE_CONTACTDIALOG_H
+#define VEGAVOICE_CONTACTDIALOG_H
 
 
 #include <QDialog>
@@ -34,4 +34,4 @@ public slots:
 };
 
 
-#endif //VOIP_CLIENT3_CONTACTDIALOG_H
+#endif //VEGAVOICE_CONTACTDIALOG_H

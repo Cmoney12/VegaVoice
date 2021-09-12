@@ -2,8 +2,8 @@
 // Created by corey on 8/22/21.
 //
 
-#ifndef VOIP_CLIENT3_SENDERUDP_H
-#define VOIP_CLIENT3_SENDERUDP_H
+#ifndef VEGAVOICE_SENDERUDP_H
+#define VEGAVOICE_SENDERUDP_H
 
 #include "UdpCall.h"
 
@@ -39,4 +39,4 @@ private:
 };
 
 
-#endif //VOIP_CLIENT3_SENDERUDP_H
+#endif //VEGAVOICE_SENDERUDP_H

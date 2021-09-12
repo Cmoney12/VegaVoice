@@ -2,8 +2,8 @@
 // Created by corey on 8/21/21.
 //
 
-#ifndef VOIP_CLIENT3_DATABASE_HANDLER_H
-#define VOIP_CLIENT3_DATABASE_HANDLER_H
+#ifndef VEGAVOICE_DATABASE_HANDLER_H
+#define VEGAVOICE_DATABASE_HANDLER_H
 
 #include <sqlite3.h>
 #include <list>
@@ -298,4 +298,4 @@ private:
     char *zErrMsg = nullptr;
 };
 
-#endif //VOIP_CLIENT3_DATABASE_HANDLER_H
+#endif //VEGAVOICE_DATABASE_HANDLER_H
