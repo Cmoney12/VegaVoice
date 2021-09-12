@@ -30,10 +30,12 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+    QTabWidget *tab_widget;
+    QTab *phone_tab;
     QFormLayout *left_layout;
     QSplitter *splitter;
-    QFormLayout *right_layout;
-    QWidget *right_widget;
+    QFormLayout *phone_layout;
+    QWidget *phone_widget;
     QWidget *left_widget;
     QMenuBar *menu;
     QMenu *settings_menu;

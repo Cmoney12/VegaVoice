@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *udp_settings = settings_menu->addAction("Default UDP port");
     menu->addMenu(settings_menu);
 
+    tab_widget = new QTabWidget;
+
     //*****Contacts*******
     contact_label = new QLabel("Contacts");
     splitter = new QSplitter;
@@ -49,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
     contact_view->setModel(string_list);
     auto *contacts_widgets = new QWidget;
     auto *contact_button_layout = new QGridLayout;
-    contact_button_layout->addWidget(connect_button, 0, 0);
     contact_button_layout->addWidget(new_contact, 1, 0);
     contact_button_layout->addWidget(erase_contact, 1, 1);
     contacts_widgets->setLayout(contact_button_layout);
@@ -60,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent)
     left_widget->setLayout(left_layout);
 
     //*****Phone********
-    right_layout = new QFormLayout;
-    right_widget = new QWidget;
+    phone_layout = new QFormLayout;
+    phone_widget = new QWidget;
     keypad_layout = new QGridLayout;
     keypad_widget = new QWidget;
     number_line = new QLineEdit;
@@ -73,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     QIcon backspace_icon(back_space_pixmap);
     back_space_button->setIcon(backspace_icon);
     //back_space_button->setIconSize(QSize(30,30));
-
+    tab_widget->addTab(phone_widget, "Call");
 
     QString picture_location = resources_path.append("/resources/phone1.png");
     QPixmap pixmap(picture_location);
@@ -85,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
     keypad_layout->addWidget(number_line, 0, 0, 1, 3);
     keypad_layout->addWidget(back_space_button, 0, 3);
     keypad_layout->addWidget(call_button, 6, 1);
+    keypad_layout->addWidget(connect_button, 6, 3);
 
 
     for (int i = digit_button; i >= 0; --i)
@@ -99,11 +101,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     keypad_layout->addWidget(phone_button[0], 5, 2);
     keypad_widget->setLayout(keypad_layout);
-    right_widget->setLayout(right_layout);
-    right_layout->addWidget(keypad_widget);
+    phone_widget->setLayout(phone_layout);
+    phone_layout->addWidget(keypad_widget);
 
     splitter->addWidget(left_widget);
-    splitter->addWidget(right_widget);
+    splitter->addWidget(tab_widget);
     setCentralWidget(splitter);
     setMenuBar(menu);
 
