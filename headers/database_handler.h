@@ -257,8 +257,8 @@ public:
         std::string contact_sql = "DELETE FROM CONTACTS WHERE username = ?";
         sqlite3_stmt *delete_stmt = nullptr;
         if (sqlite3_prepare_v2(db, contact_sql.c_str(), -1, &delete_stmt, nullptr) == SQLITE_OK) {
-            rc = sqlite3_step(delete_stmt);
             sqlite3_bind_text(delete_stmt, 1, contact.c_str(), -1, nullptr);
+            rc = sqlite3_step(delete_stmt);
             sqlite3_exec(db, "COMMIT TRANSACTION", nullptr, nullptr, &zErrMsg);
             sqlite3_finalize(delete_stmt);
             sqlite3_free(zErrMsg);
