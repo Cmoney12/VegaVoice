@@ -10,9 +10,12 @@ CallHistoryWidget::CallHistoryWidget(QWidget *parent) {
 
     history_table = new QTableWidget;
 
+    clear_history_ = new QPushButton("Clear History");
+
     history_table->setColumnCount(3);
 
     history_layout->addRow(history_label_);
+    history_layout->addRow(clear_history_);
     history_layout->addRow(history_table);
 
     auto *receiver_number_ = new QTableWidgetItem();
@@ -26,6 +29,7 @@ CallHistoryWidget::CallHistoryWidget(QWidget *parent) {
     auto *date_time_ = new QTableWidgetItem();
     receiver_number_->setText("Date Time");
     history_table->setHorizontalHeaderItem(2, date_time_);
+
 
     setLayout(history_layout);
 

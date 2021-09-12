@@ -88,6 +88,7 @@ public slots:
 
 private:
     void send_call_request();
+    void clear_history();
 
 private:
     QTcpSocket *socket;

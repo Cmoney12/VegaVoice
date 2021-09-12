@@ -131,6 +131,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(contact_view, SIGNAL(clicked(QModelIndex)), this, SLOT(set_recipient()));
     connect(contact_dialog, &ContactDialog::accepted, this, &MainWindow::contact_submission);
     connect(tab_widget, SIGNAL(currentChanged(int)), this, SLOT(tab_selected()));
+    connect(history_widget->clear_history_, &QPushButton::pressed, this, &MainWindow::clear_history);
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
@@ -166,6 +167,26 @@ void MainWindow::tab_selected() {
     if (tab_widget->currentIndex() == 1) {
         std::list<std::tuple<std::string, std::string, std::int64_t>> history = db_handler->get_call_history();
         history_widget->set_history(history);
+    }
+}
+
+
+void MainWindow::clear_history() {
+    QMessageBox confirm_delete;
+    confirm_delete.setText("Clear All History");
+    confirm_delete.setInformativeText("Are you sure?");
+    confirm_delete.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    confirm_delete.setDefaultButton(QMessageBox::Cancel);
+    int res = confirm_delete.exec();
+    switch (res) {
+        case QMessageBox::Ok:
+            history_widget->history_table->setRowCount(0);
+            db_handler->clear_history();
+            break;
+        case QMessageBox::Cancel:
+            break;
+        default:
+            break;
     }
 }
 
@@ -353,6 +374,7 @@ void MainWindow::onReadyRead() {
                 int ret = msgBox.exec();
                 switch (ret) {
                     case QMessageBox::Ok:
+                        call_in_progress = true;
                         accept_call_request();
                         break;
                     case QMessageBox::Cancel:
@@ -361,7 +383,6 @@ void MainWindow::onReadyRead() {
                     default:
                         break;
                 }
-                call_in_progress = true;
             }
 
             else if (protocol.status_code == 200) {

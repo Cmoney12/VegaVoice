@@ -264,6 +264,12 @@ public:
         sqlite3_free(zErrMsg);
     }
 
+    void clear_history() {
+        char delete_history[] = "DELETE FROM HISTORY";
+        rc = sqlite3_exec(db, delete_history, nullptr, nullptr, &zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+
     std::string get_phone_number() {
         std::string phone_number;
 
