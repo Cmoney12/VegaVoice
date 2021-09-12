@@ -22,7 +22,7 @@ Login::Login(QWidget *parent) :QDialog(parent)
     QString logo_path = resources_path + "/resources/vega_logo.png";
     auto *logo_ = new QPixmap(logo_path);
 
-    QLabel *logo_label = new QLabel;
+    auto *logo_label = new QLabel;
     logo_label->setPixmap(*logo_);
 
     phone_number_label = new QLabel("Phone Number");
