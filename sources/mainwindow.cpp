@@ -166,6 +166,7 @@ void MainWindow::set_recipient() const {
 void MainWindow::start_phone_call() {
     if (call_in_progress) {
         call_in_progress = false;
+        hang_up();
         end_call();
     }
     else if (!call_in_progress && !number_line->text().isEmpty()) {
@@ -293,6 +294,22 @@ void MainWindow::set_default_udp_port() {
 
 }
 
+void MainWindow::hang_up() {
+    auto *serial = new Serialization;
+    Protocol protocol_packet{};
+    std::memcpy(protocol_packet.senders_number, users_phone_number.c_str(), users_phone_number.size() + 1);
+    std::string receivers_string  = number_line->text().toStdString();
+    std::memcpy(protocol_packet.receivers_number, receivers_string.c_str(), receivers_string.size() + 1);
+    protocol_packet.status_code = 487; //trying
+
+    serial->create_bson(protocol_packet);
+    uint8_t *data = serial->create_packet();
+
+    socket->write((char*)data, serial->length());
+    call_in_progress = true;
+    delete serial;
+}
+
 
 void MainWindow::onReadyRead() {
     auto *serial = new Serialization;
@@ -336,6 +353,10 @@ void MainWindow::onReadyRead() {
             else if (protocol.status_code == 603) {
                 call_in_progress = false;
                 std::cout << "603" << std::endl;
+            }
+            else if (protocol.status_code == 487) {
+                call_in_progress = false;
+                end_call();
             }
         }
     }

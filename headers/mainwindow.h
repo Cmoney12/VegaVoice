@@ -66,6 +66,7 @@ public:
     void call_established(char* ip_address);
     void end_call();
     void display_contacts() const;
+    void hang_up();
 
 
 public slots:
