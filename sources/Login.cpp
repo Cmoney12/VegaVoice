@@ -18,6 +18,13 @@ Login::Login(QWidget *parent) :QDialog(parent)
     const char *db_path = ba.data();
     db_handler = new database_handler(db_path);
     db_handler->check_tables();
+
+    QString logo_path = resources_path + "/resources/vega_logo.png";
+    auto *logo_ = new QPixmap(logo_path);
+
+    QLabel *logo_label = new QLabel;
+    logo_label->setPixmap(*logo_);
+
     phone_number_label = new QLabel("Phone Number");
     phone_number = new QLineEdit;
     password_password_label = new QLabel("Password");
@@ -25,12 +32,13 @@ Login::Login(QWidget *parent) :QDialog(parent)
     submit = new QPushButton("Login");
     register_button = new QPushButton("Register");
     layout = new QGridLayout;
-    layout->addWidget(phone_number_label, 0, 0);
-    layout->addWidget(phone_number, 0, 1);
-    layout->addWidget(password_password_label, 1,0);
-    layout->addWidget(password, 1, 1);
-    layout->addWidget(submit,2,1);
-    layout->addWidget(register_button, 3, 1);
+    layout->addWidget(logo_label, 0, 0, 1, 2);
+    layout->addWidget(phone_number_label, 1, 0);
+    layout->addWidget(phone_number, 1, 1);
+    layout->addWidget(password_password_label, 2,0);
+    layout->addWidget(password, 2, 1);
+    layout->addWidget(submit,3,1);
+    layout->addWidget(register_button, 4, 1);
 
     connect(submit, &QPushButton::clicked, this, &Login::validate);
     connect(register_button, &QPushButton::clicked, this, &Login::register_user);

@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setWindowTitle("Vega");
+
     QDir current_dir = QDir::current();
     current_dir.cdUp();
     QString resources_path = current_dir.absolutePath();
@@ -61,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     left_widget->setLayout(left_layout);
 
     //*****Phone********
+    history_widget = new CallHistoryWidget;
     phone_layout = new QFormLayout;
     phone_widget = new QWidget;
     keypad_layout = new QGridLayout;
@@ -75,6 +78,9 @@ MainWindow::MainWindow(QWidget *parent)
     back_space_button->setIcon(backspace_icon);
     //back_space_button->setIconSize(QSize(30,30));
     tab_widget->addTab(phone_widget, "Call");
+    tab_widget->addTab(history_widget, "History");
+
+    //******Call history*********
 
     QString picture_location = resources_path.append("/resources/phone1.png");
     QPixmap pixmap(picture_location);
@@ -124,6 +130,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(erase_contact, &QPushButton::clicked, this, &MainWindow::delete_contact);
     connect(contact_view, SIGNAL(clicked(QModelIndex)), this, SLOT(set_recipient()));
     connect(contact_dialog, &ContactDialog::accepted, this, &MainWindow::contact_submission);
+    connect(tab_widget, SIGNAL(currentChanged(int)), this, SLOT(tab_selected()));
 }
 
 Button *MainWindow::createButton(const QString &text, const char *member)
@@ -153,6 +160,13 @@ void MainWindow::connection() {
     QHostInfo::fromName(QHostInfo::localHostName()).addresses().toStdList();
 
 
+}
+
+void MainWindow::tab_selected() {
+    if (tab_widget->currentIndex() == 1) {
+        std::list<std::tuple<std::string, std::string, std::int64_t>> history = db_handler->get_call_history();
+        history_widget->set_history(history);
+    }
 }
 
 
@@ -204,6 +218,7 @@ void MainWindow::contact_submission() {
         db_handler->create_contact(contact_name_.c_str(), contact_number_.c_str());
         string_list->append(QString::fromStdString(contact_name_));
     }
+
     contact_dialog->contact_name_edit->clear();
     contact_dialog->contact_number_edit->clear();
 }
@@ -222,12 +237,19 @@ void MainWindow::send_call_request() {
 
     serial->create_bson(protocol_packet);
     uint8_t *data = serial->create_packet();
+    std::int64_t date_time = current_date_time();
+    db_handler->insert_history(protocol_packet.receivers_number, "CALL_ATTEMPT", date_time);
 
     socket->write((char*)data, serial->length());
     call_in_progress = true;
     delete serial;
 }
 
+std::int64_t MainWindow::current_date_time() {
+    std::time_t result = std::time(nullptr);
+    auto current_timestamp = (std::int64_t)result;
+    return current_timestamp;
+}
 
 void MainWindow::accept_call_request() {
     auto *serial = new Serialization;
@@ -256,7 +278,6 @@ void MainWindow::call_established(char* ip_address) {
         phone_call = new UdpCall(ip_address, port, port, audio);
         call_thread = new std::thread([&] { phone_call->start(); });
     }
-
 }
 
 void MainWindow::end_call() {
@@ -341,21 +362,23 @@ void MainWindow::onReadyRead() {
                         break;
                 }
                 call_in_progress = true;
-                std::cout << protocol.data << std::endl;
             }
 
             else if (protocol.status_code == 200) {
                 //call was accepted instantiate Audio start sending date
                 call_established(protocol.data);
-                std::cout << "200" << std::endl;
+                std::int64_t date_time = current_date_time();
+                db_handler->insert_history(protocol.senders_number, "CALL_ESTABLISHED", date_time);
             }
 
             else if (protocol.status_code == 603) {
                 call_in_progress = false;
-                std::cout << "603" << std::endl;
             }
+
             else if (protocol.status_code == 487) {
                 call_in_progress = false;
+                std::int64_t date_time = current_date_time();
+                db_handler->insert_history(protocol.senders_number, "CALL_TERMINATED", date_time);
                 end_call();
             }
         }

@@ -150,7 +150,7 @@ add_executable(VegaVoice main.cpp
         headers/button.h
         headers/StringList.h
         headers/database_handler.h
-        sources/Login.cpp headers/Login.h headers/UdpCall.h headers/SenderUdp.h headers/DelivererUdp.h headers/Serialization.h headers/Audio.h headers/ReceiverUdp.h sources/ContactDialog.cpp headers/ContactDialog.h)
+        sources/Login.cpp headers/Login.h headers/UdpCall.h headers/SenderUdp.h headers/DelivererUdp.h headers/Serialization.h headers/Audio.h headers/ReceiverUdp.h sources/ContactDialog.cpp headers/ContactDialog.h sources/CallHistoryWidget.cpp headers/CallHistoryWidget.h)
 
 target_link_libraries(VegaVoice
         Qt5::Core

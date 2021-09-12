@@ -19,6 +19,7 @@
 #include "Audio.h"
 #include "UdpCall.h"
 #include "ContactDialog.h"
+#include "CallHistoryWidget.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -38,6 +39,7 @@ public:
     QSplitter *splitter;
     QFormLayout *phone_layout;
     QWidget *phone_widget;
+    CallHistoryWidget *history_widget;
     QWidget *left_widget;
     QMenuBar *menu;
     QMenu *settings_menu;
@@ -67,6 +69,7 @@ public:
     void end_call();
     void display_contacts() const;
     void hang_up();
+    std::int64_t current_date_time();
 
 
 public slots:
@@ -81,6 +84,7 @@ public slots:
     void delete_contact();
     void set_recipient() const;
     void contact_submission();
+    void tab_selected();
 
 private:
     void send_call_request();
