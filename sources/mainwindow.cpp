@@ -6,6 +6,7 @@
 #include <QHostAddress>
 #include <QHostInfo>
 #include <QInputDialog>
+#include <QDebug>
 #include <QDialogButtonBox>
 #include "../headers/mainwindow.h"
 #include "./ui_mainwindow.h"
@@ -146,18 +147,14 @@ void MainWindow::connection() {
     std::string send_number = users_phone_number + "\n";
     std::string host_ip = db_handler->get_host_ip();
 
-    auto host = QString::fromStdString(host_ip);
-    quint8 host_ = host.toUInt();
+    socket->connectToHost(host_ip.c_str(), 1234);
 
-    hostname = QHostAddress(host_);
-    socket->connectToHost(hostname, 1234);
-
-    if(!socket->waitForConnected(5))
+    /**if(!socket->waitForConnected(500))
     {// Error
         socket->close();
-    }
+    }**/
 
-    if ((socket->state() == QAbstractSocket::ConnectedState)) {
+    if ((socket->state() != QAbstractSocket::ConnectedState)) {
         socket->write(QString(send_number.c_str()).toUtf8());
     }
     else {
@@ -379,9 +376,9 @@ void MainWindow::onReadyRead() {
                     case QMessageBox::Ok:
                         call_in_progress = true;
                         accept_call_request();
+                        start_phone_call();
                         break;
                     case QMessageBox::Cancel:
-                        std::cout << "Canceled" << std::endl;
                         break;
                     default:
                         break;
