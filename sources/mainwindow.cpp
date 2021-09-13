@@ -275,12 +275,12 @@ std::int64_t MainWindow::current_date_time() {
     return current_timestamp;
 }
 
-void MainWindow::accept_call_request() {
+void MainWindow::accept_call_request(const char* send_num) {
     auto *serial = new Serialization;
     Protocol protocol_packet{};
     std::memcpy(protocol_packet.senders_number, users_phone_number.c_str(), users_phone_number.size() + 1);
     std::string receivers_string  = number_line->text().toStdString();
-    std::memcpy(protocol_packet.receivers_number, receivers_string.c_str(), receivers_string.size() + 1);
+    std::memcpy(protocol_packet.receivers_number, send_num, std::strlen(send_num));
     protocol_packet.status_code = 200; //trying
 
     serial->create_bson(protocol_packet);
@@ -378,7 +378,7 @@ void MainWindow::onReadyRead() {
                 switch (ret) {
                     case QMessageBox::Ok:
                         call_in_progress = true;
-                        accept_call_request();
+                        accept_call_request(protocol.senders_number);
                         call_established(protocol.data);
                         break;
                     case QMessageBox::Cancel:
