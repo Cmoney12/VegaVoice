@@ -283,6 +283,8 @@ void MainWindow::accept_call_request(const char* send_num) {
     std::string receivers_string  = number_line->text().toStdString();
     std::memcpy(protocol_packet.receivers_number, send_num, std::strlen(send_num));
     protocol_packet.status_code = 200; //trying
+    int receiver_port = db_handler->get_default_port();
+    std::sprintf(protocol_packet.port, "%d", receiver_port);
 
     serial->create_bson(protocol_packet);
     uint8_t *data = serial->create_packet();

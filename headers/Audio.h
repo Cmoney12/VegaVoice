@@ -9,7 +9,6 @@
 #include <opus/opus.h>
 #include <portaudio.h>
 #include <portaudio.h>
-#include <iostream>
 
 enum Constants {
     PORT_DEFAULT = 56780,
@@ -165,4 +164,4 @@ private:
 };
 
 
-#endif //VOIP_CLIENT3_AUDIO_H
+#endif //VEGAVOICE_AUDIO_H
