@@ -65,7 +65,7 @@ public:
     std::thread *call_thread;
     bool call_in_progress = false;
     void accept_call_request(const char* send_num);
-    void call_established(char* ip_address);
+    void call_established(char* ip_address, char* port);
     void end_call();
     void display_contacts() const;
     void hang_up();

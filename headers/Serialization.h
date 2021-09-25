@@ -12,6 +12,7 @@ struct Protocol {
     char receivers_number[11];
     char senders_number[11];
     char data[30];
+    char port[6]; // receiver port
 };
 
 class Serialization {
@@ -32,7 +33,7 @@ public:
         return data_;
     }
 
-    std::size_t length() {
+    std::size_t length() const {
         return body_length_ + 4;
     }
 
@@ -53,8 +54,10 @@ public:
         bson_append_int32(&document, "Status_Code", -1, protocol.status_code);
         bson_append_utf8(&document, "Receivers_Number", -1, protocol.receivers_number, -1);
         bson_append_utf8(&document, "Senders_Number", -1, protocol.senders_number, -1);
-        if (protocol.data)
+        if (std::strlen(protocol.data) > 0)
             bson_append_utf8(&document, "Data", -1, protocol.data, -1);
+        if (std::strlen(protocol.port) > 0)
+            bson_append_utf8(&document, "Port", -1, protocol.port, -1);
         body_length_ = (int)document.len;
 
         bool steal = true;
@@ -125,6 +128,11 @@ public:
         if (bson_iter_init_find(&iter, received, "Data") && BSON_ITER_HOLDS_UTF8(&iter)) {
             const char *receiver = bson_iter_utf8(&iter, nullptr);
             std::memcpy(protocol.data, receiver, std::strlen(receiver));
+        }
+
+        if (bson_iter_init_find(&iter, received, "Port") && BSON_ITER_HOLDS_UTF8(&iter)) {
+            const char *receiver_port = bson_iter_utf8(&iter, nullptr);
+            std::memcpy(protocol.port, receiver_port, std::strlen(receiver_port));
         }
 
         bson_reader_destroy(reader);

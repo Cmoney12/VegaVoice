@@ -257,6 +257,8 @@ void MainWindow::send_call_request() {
     std::memcpy(protocol_packet.senders_number, users_phone_number.c_str(), users_phone_number.size() + 1);
     std::string receivers_string  = number_line->text().toStdString();
     std::memcpy(protocol_packet.receivers_number, receivers_string.c_str(), receivers_string.size() + 1);
+    int receiver_port = db_handler->get_default_port();
+    std::sprintf(protocol_packet.port, "%d", receiver_port);
     protocol_packet.status_code = 100; //trying
 
     serial->create_bson(protocol_packet);
@@ -265,7 +267,6 @@ void MainWindow::send_call_request() {
     db_handler->insert_history(protocol_packet.receivers_number, "CALL_ATTEMPT", date_time);
 
     socket->write((char*)data, serial->length());
-    call_in_progress = true;
     delete serial;
 }
 
@@ -287,19 +288,20 @@ void MainWindow::accept_call_request(const char* send_num) {
     uint8_t *data = serial->create_packet();
 
     socket->write((char*)data, serial->length());
-    call_in_progress = true;
     delete serial;
 }
 
-void MainWindow::call_established(char* ip_address) {
+void MainWindow::call_established(char* ip_address, char* port) {
 
 
-    if (std::strlen(ip_address) != 0) {
+    if (std::strlen(ip_address) != 0 && !call_in_progress) {
+        call_in_progress = true;
         audio = new Audio;
         audio->audio_init();
-        //TODO Get Sender port
-        int port = db_handler->get_default_port();
-        phone_call = new UdpCall(ip_address, port, port, audio);
+
+        int receiver_port = db_handler->get_default_port();
+        int sender_port = std::stoi(port);
+        phone_call = new UdpCall(ip_address, receiver_port, sender_port, audio);
         call_thread = new std::thread([&] { phone_call->start(); });
     }
 }
@@ -307,9 +309,9 @@ void MainWindow::call_established(char* ip_address) {
 void MainWindow::end_call() {
     if (phone_call && call_thread) {
         phone_call->stop();
-        phone_call = nullptr;
-        audio = nullptr;
         call_thread->join();
+        delete audio;
+        delete phone_call;
     }
 }
 
@@ -336,7 +338,6 @@ void MainWindow::set_default_udp_port() {
     if (ok && !port.isEmpty()) {
         db_handler->update_udp_port(port.toStdString());
     }
-
 }
 
 void MainWindow::hang_up() {
@@ -351,7 +352,6 @@ void MainWindow::hang_up() {
     uint8_t *data = serial->create_packet();
 
     socket->write((char*)data, serial->length());
-    call_in_progress = true;
     delete serial;
 }
 
@@ -377,9 +377,8 @@ void MainWindow::onReadyRead() {
                 int ret = msgBox.exec();
                 switch (ret) {
                     case QMessageBox::Ok:
-                        call_in_progress = true;
                         accept_call_request(protocol.senders_number);
-                        call_established(protocol.data);
+                        call_established(protocol.data, protocol.port);
                         break;
                     case QMessageBox::Cancel:
                         std::cout << "Canceled" << std::endl;
@@ -387,17 +386,20 @@ void MainWindow::onReadyRead() {
                     default:
                         break;
                 }
+                std::cout << "100" << std::endl;
             }
 
             else if (protocol.status_code == 200) {
                 //call was accepted instantiate Audio start sending date
-                call_established(protocol.data);
+                call_established(protocol.data, protocol.port);
                 std::int64_t date_time = current_date_time();
                 db_handler->insert_history(protocol.senders_number, "CALL_ESTABLISHED", date_time);
+                std::cout << "200" << std::endl;
             }
 
             else if (protocol.status_code == 603) {
                 call_in_progress = false;
+                std::cout << "603" << std::endl;
             }
 
             else if (protocol.status_code == 487) {
