@@ -49,8 +49,8 @@ public:
 
     void stop() {
         io_service.stop();
-        thread_->join();
         socket_.close();
+        thread_->join();
     }
 
 private:

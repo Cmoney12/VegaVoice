@@ -9,6 +9,7 @@
 #include <opus/opus.h>
 #include <portaudio.h>
 #include <portaudio.h>
+#include <iostream>
 
 enum Constants {
     PORT_DEFAULT = 56780,

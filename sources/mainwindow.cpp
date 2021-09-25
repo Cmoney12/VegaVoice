@@ -309,9 +309,9 @@ void MainWindow::call_established(char* ip_address, char* port) {
 void MainWindow::end_call() {
     if (phone_call && call_thread) {
         phone_call->stop();
+        delete phone_call;
         call_thread->join();
         delete audio;
-        delete phone_call;
     }
 }
 
