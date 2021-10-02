@@ -417,6 +417,7 @@ void MainWindow::onReadyRead() {
 
 MainWindow::~MainWindow()
 {
+    delete string_list;
     delete db_handler;
     delete ui;
 }

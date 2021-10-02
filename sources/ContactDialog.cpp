@@ -8,6 +8,7 @@
 ContactDialog::ContactDialog(QWidget *parent) :QDialog(parent)
 {
     setModal(true);
+    setAttribute(Qt::WA_DeleteOnClose);
 
     contact_name_label = new QLabel("Contact Name");
     contact_name_edit = new QLineEdit;

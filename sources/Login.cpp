@@ -20,10 +20,10 @@ Login::Login(QWidget *parent) :QDialog(parent)
     db_handler->check_tables();
 
     QString logo_path = resources_path + "/resources/vega_logo.png";
-    auto *logo_ = new QPixmap(logo_path);
+    QPixmap logo_(logo_path);
 
     auto *logo_label = new QLabel;
-    logo_label->setPixmap(*logo_);
+    logo_label->setPixmap(logo_);
 
     phone_number_label = new QLabel("Phone Number");
     phone_number = new QLineEdit;
