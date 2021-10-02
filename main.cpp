@@ -6,9 +6,10 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Login login;
-    login.show();
+    auto *login = new Login;
+    login->show();
     MainWindow w;
-    QObject::connect(&login, &Login::accepted, &w, &MainWindow::show);
+    login->setAttribute(Qt::WA_DeleteOnClose);
+    QObject::connect(login, &Login::accepted, &w, &MainWindow::show);
     return QApplication::exec();
 }
