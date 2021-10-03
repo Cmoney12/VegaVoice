@@ -9,6 +9,7 @@
 #include <opus/opus.h>
 #include <portaudio.h>
 #include <portaudio.h>
+#include <iostream>
 
 enum Constants {
     PORT_DEFAULT = 56780,
@@ -98,10 +99,6 @@ public:
         opus_int16 microphone[PACKET_SAMPLES]{};
         PaError paError = Pa_ReadStream(read_stream, microphone, PACKET_SAMPLES);
         if (paError != paNoError) {
-            /**if (paError == paOutputUnderflowed)
-                std::cout << "Pa_ReadStream output underflowed" << std::endl;
-            else
-                throw std::runtime_error(std::string("Pa_ReadStream failed: ") + Pa_GetErrorText(paError));**/
             if (paError != paInputOverflowed)
                 throw std::runtime_error(std::string("Pa_ReadStream error: ") + Pa_GetErrorText(paError));
         }
@@ -111,6 +108,7 @@ public:
             throw std::runtime_error(std::string("opus_encode error: ") + opus_strerror(encoded));
 
         packet.size = encoded;
+        // size is never greater than 150
         return packet;
     }
 

@@ -65,4 +65,4 @@ private:
 };
 
 
-#endif //VOIP_CLIENT3_RECEIVERUDP_H
+#endif //VEGAVOICE_RECEIVERUDP_H

@@ -400,12 +400,10 @@ void MainWindow::onReadyRead() {
                 call_established(protocol.data, protocol.port);
                 std::int64_t date_time = current_date_time();
                 db_handler->insert_history(protocol.senders_number, "CALL_ESTABLISHED", date_time);
-                std::cout << "200" << std::endl;
             }
 
             else if (protocol.status_code == 603) {
                 call_in_progress = false;
-                std::cout << "603" << std::endl;
             }
 
             else if (protocol.status_code == 487) {
