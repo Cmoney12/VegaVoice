@@ -11,7 +11,7 @@ class SenderUdp {
 public:
 
     SenderUdp(const std::string& ip_address, const int& port) {
-        socket_ = new boost::asio::ip::udp::socket(io_service);
+        socket_ = new boost::asio::ip::udp::socket(io_context);
         socket_->open(boost::asio::ip::udp::v4());
         remote_endpoint = new boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(ip_address), port);
     }
@@ -29,12 +29,13 @@ public:
 
 
     void stop() {
+        std::cout << "stopped 2" << std::endl;
         socket_->close();
     }
 
 private:
     boost::asio::ip::udp::socket *socket_ = nullptr;
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     boost::asio::ip::udp::endpoint *remote_endpoint;
 };
 

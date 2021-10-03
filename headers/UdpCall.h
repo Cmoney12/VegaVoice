@@ -14,7 +14,7 @@
 #include "SenderUdp.h"
 
 
-class UdpCall : public ReceiverUdp, SenderUdp {
+class UdpCall : public ReceiverUdp, public SenderUdp {
 public:
 
     UdpCall(const std::string& ip_address, const int& port_receiver, const int& port_sender, Audio* audio)

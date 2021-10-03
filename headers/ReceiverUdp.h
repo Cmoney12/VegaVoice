@@ -15,7 +15,7 @@ public:
         socket_.open(boost::asio::ip::udp::v4());
         read_packet();
         socket_.bind(boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port_));
-        thread_ = new std::thread([&] { io_service.run(); });
+        thread_ = new std::thread([&] { io_context.run(); });
     }
 
     void read_packet() {
@@ -48,17 +48,19 @@ public:
     }**/
 
     void stop() {
-        io_service.stop();
+        std::cout << "stopped 1" << std::endl;
+        io_context.stop();
         socket_.close();
         thread_->join();
+        delete thread_;
     }
 
 private:
     Packet packet_{};
     Audio* audio_ = nullptr;
     std::size_t header_size_ = sizeof(packet_.size);
-    boost::asio::io_service io_service;
-    boost::asio::ip::udp::socket socket_{io_service};
+    boost::asio::io_context io_context;
+    boost::asio::ip::udp::socket socket_{io_context};
     boost::asio::ip::udp::endpoint remote_endpoint;
     std::thread *thread_ = nullptr;
 };

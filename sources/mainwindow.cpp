@@ -311,9 +311,13 @@ void MainWindow::call_established(char* ip_address, char* port) {
 void MainWindow::end_call() {
     if (phone_call && call_thread) {
         phone_call->stop();
-        delete phone_call;
         call_thread->join();
+        delete call_thread;
+        delete phone_call;
         delete audio;
+        phone_call = nullptr;
+        call_thread = nullptr;
+        audio = nullptr;
     }
 }
 
