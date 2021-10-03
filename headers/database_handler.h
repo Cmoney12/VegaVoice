@@ -92,6 +92,7 @@ public:
                 return true;
             }
         }
+        //sqlite3_finalize(selectstmt);
         return false;
     }
 
@@ -109,7 +110,7 @@ public:
         struct sqlite3_stmt *selectstmt;
         int result = sqlite3_prepare_v2(db, sql, -1, &selectstmt, nullptr);
         if (result == SQLITE_OK) {
-            sqlite3_free(selectstmt);
+            sqlite3_finalize(selectstmt);
             exists = true;
         }
         return exists;
@@ -128,7 +129,7 @@ public:
         struct sqlite3_stmt *selectstmt;
         int result = sqlite3_prepare(db, sql, -1, &selectstmt, nullptr);
         if (result == SQLITE_OK) {
-            sqlite3_free(selectstmt);
+            sqlite3_finalize(selectstmt);
             exists = true;
         }
         return exists;
@@ -209,8 +210,7 @@ public:
                     //sqlite3_finalize(selectStmt);
                     for (int i = 0; i < ctotal; i++)  // Loop times the number of columns in the table
                     {
-                        std::string s = (char *) sqlite3_column_text(selectStmt,
-                                                                     i);  // Read each Column in the row.
+                        std::string s = (char *) sqlite3_column_text(selectStmt, i);  // Read each Column in the row.
                         // print or format the output as you want
                         host_ip += s;
                     }

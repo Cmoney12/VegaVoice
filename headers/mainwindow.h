@@ -60,7 +60,7 @@ public:
     std::string users_phone_number;
     QPushButton *connect_button;
     QHostAddress hostname;
-    Audio* audio;
+    Audio *audio;
     UdpCall *phone_call;
     std::thread *call_thread;
     bool call_in_progress = false;
