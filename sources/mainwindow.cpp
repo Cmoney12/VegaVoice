@@ -146,11 +146,11 @@ void MainWindow::connection() {
     std::string send_number = users_phone_number + "\n";
     std::string host_ip = db_handler->get_host_ip();
 
-    auto host = QString::fromStdString(host_ip);
-    quint8 host_ = host.toUInt();
+    //auto host = QString::fromStdString(host_ip);
+    //quint8 host_ = host.toUInt();
 
-    hostname = QHostAddress(host_);
-    socket->connectToHost(hostname, 1234);
+    //hostname = QHostAddress(host_);
+    socket->connectToHost(host_ip.c_str(), 1234);
 
     if(!socket->waitForConnected(5))
     {// Error
