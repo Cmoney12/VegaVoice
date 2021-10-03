@@ -48,7 +48,6 @@ public:
     }**/
 
     void stop() {
-        std::cout << "stopped 1" << std::endl;
         io_context.stop();
         socket_.close();
         thread_->join();

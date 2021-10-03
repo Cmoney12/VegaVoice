@@ -29,7 +29,6 @@ public:
 
 
     void stop() {
-        std::cout << "stopped 2" << std::endl;
         socket_->close();
     }
 
