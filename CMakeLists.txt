@@ -150,7 +150,6 @@ add_executable(VegaVoice main.cpp
         headers/Login.h
         headers/UdpCall.h
         headers/SenderUdp.h
-        headers/DelivererUdp.h
         headers/Serialization.h
         headers/Audio.h
         headers/ReceiverUdp.h

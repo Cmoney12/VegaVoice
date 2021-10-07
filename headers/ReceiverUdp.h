@@ -57,7 +57,6 @@ public:
 private:
     Packet packet_{};
     Audio* audio_ = nullptr;
-    std::size_t header_size_ = sizeof(packet_.size);
     boost::asio::io_context io_context;
     boost::asio::ip::udp::socket socket_{io_context};
     boost::asio::ip::udp::endpoint remote_endpoint;

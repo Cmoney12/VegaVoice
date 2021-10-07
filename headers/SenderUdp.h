@@ -22,7 +22,7 @@ public:
 
     void write_packet(const Packet& packet) {
         boost::system::error_code ec;
-        socket_->send(boost::asio::buffer(&packet, sizeof(packet)), 0, ec);
+        socket_->send(boost::asio::buffer(&packet, packet.size + header_size), 0, ec);
         if (ec)
             std::cerr << ec << std::endl;
     }
@@ -33,6 +33,7 @@ public:
     }
 
 private:
+    enum{header_size = 4};
     boost::asio::ip::udp::socket *socket_ = nullptr;
     boost::asio::io_context io_context;
     boost::asio::ip::udp::endpoint *remote_endpoint;

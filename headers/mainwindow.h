@@ -69,7 +69,7 @@ public:
     void end_call();
     void display_contacts() const;
     void hang_up();
-    std::int64_t current_date_time();
+    static std::int64_t current_date_time();
 
 
 public slots:
