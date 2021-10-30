@@ -2,7 +2,7 @@
 
 ![alt text](/resources/vega_logo.png)
 
-Voip application using Qt5, Bson, Sqlite3, PortAudio, and Boost Asio.
+Voip application using Qt5, Bson, Sqlite3, PortAudio, opus, and Boost Asio.
 
 Uses a sip like protocol and works in conjunction with:
 
