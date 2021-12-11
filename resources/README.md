@@ -5,9 +5,9 @@ Fetch from repo:
 
 Prerequisites
 
-```bash
+'''bash
 sudo apt-get install cmake libssl-dev libsasl2-dev
-```
+'''
 
 ```bash
 apt-get install libbson-1.0
@@ -29,14 +29,14 @@ cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF ..
 sudo make install
 ```
 
-### Boost LIBS:
+###Boost LIBS:
 Fetch from repo:
 
 ```bash
 sudo apt-get install libboost-all-dev
 ```
 
-### SQLITE3
+###SQLITE3
 
 ```bash
 sudo apt-get install sqlite3 libsqlite3-dev
@@ -53,18 +53,18 @@ make
 make install
 ```
 
-### QT5 LIBS
+###QT5 LIBS
 ```bash
 sudo apt-get install qt5-default
 ```
 
-### ALSA LIBS
+###ALSA LIBS
 
 ```bash
 sudo apt-get install libasound-dev
 ```
 
-### Portaudio LIBS
+###Portaudio LIBS
 
 ```bash
 sudo apt-get install libasound-dev 
@@ -76,7 +76,7 @@ sudo make install
 sudo ldconfig
 ```
 
-### OPUS LIBS
+###OPUS LIBS
 
 ```
 git clone https://gitlab.xiph.org/xiph/opus.git
@@ -87,4 +87,3 @@ sudo make
 sudo make install
 sudo ldconfig
 ```
-
