@@ -10,3 +10,8 @@ https://github.com/Cmoney12/VegaVoiceServer
 
 
 ![alt text](/resources/gui.png)
+
+# Installation
+## Dependencies
+
+See Readme in resources
