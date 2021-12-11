@@ -3,6 +3,12 @@
 
 Fetch from repo:
 
+Prerequisites
+
+'''bash
+sudo apt-get install cmake libssl-dev libsasl2-dev
+'''
+
 '''bash
 apt-get install libbson-1.0
 '''
@@ -10,12 +16,17 @@ apt-get install libbson-1.0
 Build from Source:
 
 '''bash
-wget https://github.com/mongodb/mongo-c-driver/releases/download/1.12.0/mongo-c-driver-1.12.0.tar.gz
-tar xzf mongo-c-driver-1.12.0.tar.gz
-cd mongo-c-driver-1.12.0
+sudo apt-get install libmongoc-1.0-0
+sudo apt-get install libbson-1.0
+sudo apt-get install cmake libssl-dev libsasl2-dev
+
+wget https://github.com/mongodb/mongo-c-driver/releases/download/1.16.2/mongo-c-driver-1.16.2.tar.gz
+tar xzf mongo-c-driver-1.16.2.tar.gz
+cd mongo-c-driver-1.16.2
 mkdir cmake-build
 cd cmake-build
 cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF ..
+sudo make install
 '''
 
 ###Boost LIBS:
@@ -56,6 +67,24 @@ sudo apt-get install libasound-dev
 ###Portaudio LIBS
 
 '''bash
-sudo apt-get install portaudio19-dev
+sudo apt-get install libasound-dev 
+git clone https://github.com/PortAudio/portaudio.git
+cd portaudio
+./configure
+sudo make 
+sudo make install 
+sudo ldconfig
+'''
+
+###OPUS LIBS
+
+'''
+git clone https://gitlab.xiph.org/xiph/opus.git
+cd opus
+./autogen.sh
+./configure
+sudo make 
+sudo make install
+sudo ldconfig
 '''
 

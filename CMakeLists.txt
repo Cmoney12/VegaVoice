@@ -10,7 +10,7 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
 
-find_package (bson-1.0 1.7 REQUIRED)
+find_package (bson-1.0 1.6 REQUIRED)
 
 find_package(Qt5 COMPONENTS
         Core
