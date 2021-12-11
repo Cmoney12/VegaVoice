@@ -39,7 +39,7 @@ sudo apt-get install libboost-all-dev
 ###SQLITE3
 
 '''bash
-sudo apt-get install sqlite3
+sudo apt-get install sqlite3 libsqlite3-dev
 '''
 
 Build Libs from source:
