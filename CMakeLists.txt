@@ -11,6 +11,12 @@ find_package(Threads REQUIRED)
 
 
 find_package (bson-1.0 1.6 REQUIRED)
+find_package (SQLite3)
+if (SQLITE3_FOUND)
+    message("SQLite3 found")
+    include_directories(${SQLITE3_INCLUDE_DIRS})
+endif()
+
 
 find_package(Qt5 COMPONENTS
         Core
