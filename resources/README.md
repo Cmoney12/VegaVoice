@@ -5,17 +5,17 @@ Fetch from repo:
 
 Prerequisites
 
-'''bash
+```bash
 sudo apt-get install cmake libssl-dev libsasl2-dev
-'''
+```
 
-'''bash
+```bash
 apt-get install libbson-1.0
-'''
+```
 
 Build from Source:
 
-'''bash
+```bash
 sudo apt-get install libmongoc-1.0-0
 sudo apt-get install libbson-1.0
 sudo apt-get install cmake libssl-dev libsasl2-dev
@@ -27,46 +27,46 @@ mkdir cmake-build
 cd cmake-build
 cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF ..
 sudo make install
-'''
+```
 
 ###Boost LIBS:
 Fetch from repo:
 
-'''bash
+```bash
 sudo apt-get install libboost-all-dev
-'''
+```
 
 ###SQLITE3
 
-'''bash
+```bash
 sudo apt-get install sqlite3 libsqlite3-dev
-'''
+```
 
 Build Libs from source:
 
-'''bash
+```bash
 wget http://www.sqlite.org/sqlite-autoconf-3070603.tar.gz
 tar xvfz sqlite-autoconf-3070603.tar.gz
 cd sqlite-autoconf-3070603
 ./configure
 make
 make install
-'''
+```
 
 ###QT5 LIBS
-'''bash
+```bash
 sudo apt-get install qt5-default
-'''
+```
 
 ###ALSA LIBS
 
-'''bash
+```bash
 sudo apt-get install libasound-dev
-'''
+```
 
 ###Portaudio LIBS
 
-'''bash
+```bash
 sudo apt-get install libasound-dev 
 git clone https://github.com/PortAudio/portaudio.git
 cd portaudio
@@ -74,11 +74,11 @@ cd portaudio
 sudo make 
 sudo make install 
 sudo ldconfig
-'''
+```
 
 ###OPUS LIBS
 
-'''
+```
 git clone https://gitlab.xiph.org/xiph/opus.git
 cd opus
 ./autogen.sh
@@ -86,5 +86,5 @@ cd opus
 sudo make 
 sudo make install
 sudo ldconfig
-'''
+```
 
